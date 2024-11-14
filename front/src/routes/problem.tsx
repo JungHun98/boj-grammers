@@ -36,7 +36,7 @@ function ProblemSection({title, html}: ProblemSectionProps) {
 function Example({content}: ExampleProps) {
   return( 
   <div>
-    <ExamplePre>{content}</ExamplePre>
+    <pre>{content}</pre>
   </div>
   )
 }
@@ -378,12 +378,4 @@ font-weight: 700;
 font-size: 14px;
     margin-bottom: 1rem;
     color: white;
-`
-
-const ExamplePre = styled('pre')`
-  background: #202b3d;
-  padding: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 130%;
 `

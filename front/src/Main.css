@@ -359,3 +359,11 @@ dialog {
 .title {
     position: relative;
 }
+
+pre {
+    background: #202b3d;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 130%;
+}
