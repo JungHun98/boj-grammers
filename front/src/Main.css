@@ -182,7 +182,7 @@ main {
 }
 
 .solution-wrapper {
-    flex-grow: 1;
+    height: calc(100vh - (3.5rem + 3.5625rem));
 }
 
 .select-lang {
