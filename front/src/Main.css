@@ -2,7 +2,7 @@
    v2.0 | 20110126
    License: none (public domain)
 */
-@import url("https://font.elice.io/css?family=Elice+Digital+Coding");
+/* @import url("https://font.elice.io/css?family=Elice+Digital+Coding"); */
 
 @font-face {
     font-family: 'Pretendard-Regular';
@@ -15,13 +15,17 @@
     box-sizing: border-box;
 }
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+body, button {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+/* html, body, div, span, applet, object, iframe, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, img, ins, kbd, q, s, samp,
 small, strike, strong, sub, sup, tt, var,
 b, u, i, center,
-dl, dt, dd, ol, ul, li,
+dl, dt, dd,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
 article, aside, canvas, details, embed, 
@@ -34,8 +38,9 @@ time, mark, audio, video {
 	font-size: 100%;
 	font: inherit;
 	vertical-align: baseline;
-}
-/* HTML5 display-role reset for older browsers */
+} */
+
+/*
 article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
 	display: block;
@@ -58,7 +63,7 @@ q:before, q:after {
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
-}
+} */
 
 ::-webkit-scrollbar-track {
 	background-color: transparent;
@@ -331,7 +336,7 @@ dialog {
 }
 
 .gutter {
-    width: 24px;
+    width: 15px;
     background-image: url('/public/gutter.png');
     background-repeat: no-repeat;
     background-position: center;
@@ -340,7 +345,7 @@ dialog {
 }
 
 .gutter_vertical {
-    height: 24px;
+    height: 15px;
     background-image: url('/public/gutter_ver.png');
     background-repeat: no-repeat;
     background-position: center;
@@ -349,4 +354,8 @@ dialog {
     background-color: #182025;
     border: solid 1px #414547;
     border-bottom: none;
+}
+
+.title {
+    position: relative;
 }

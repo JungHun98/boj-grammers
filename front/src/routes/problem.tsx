@@ -8,23 +8,16 @@ import { LanguageName, loadLanguage } from "@uiw/codemirror-extensions-langs";
 import { IOutput, IProblem } from "../types";
 import { defaultCode } from "../utils/consts";
 
+import styled from "@emotion/styled";
+
 interface IDialog {
   title: string;
   text: string;
 }
 
 const Problem = () => {
-  const { problemId } = useParams();
   const navigate = useNavigate();
   let blocker = useBlocker(true);
-
-  // const socket = io(`${process.env.REACT_APP_API_ENDPOINT}/problem`, {
-  //   transports: ["websocket", "polling"],
-  //   query: {
-  //     problem: problemId,
-  //     path: "*",
-  //   },
-  // });
 
   const dialogRef = useRef<HTMLDialogElement>(null);
   const codeRef = useRef<string>();
@@ -37,6 +30,11 @@ const Problem = () => {
   const [output, setOutput] = useState<IOutput[] | null>();
   const [error, setError] = useState<string | null>();
   const [dialogText, setDialogText] = useState<IDialog | null>();
+
+  const [problem, setProblem] = useState({title:'', descriptionHtml:'', inputHtml: '',
+    outputHtml: '',
+    limitHtml: '',
+    examples: ''});
 
   const handleDrag: DragEventHandler= (e) => {
     const newLeftWidth = (e.clientX / window.innerWidth) * 100;
@@ -77,10 +75,13 @@ const Problem = () => {
   // }, [lang, problemId, socket]);
 
   useEffect(() => {
-    if (problemId) {
-      // requestProblem(problemId).then((rep) => setProblem(rep.data));
+    async function ft () {
+
+      const result = await fetch('http://localhost:8080/api/problem').then((response) => response.json());
+      setProblem(result);
     }
-  }, [problemId]);
+    // ft();
+  }, []);
 
   useEffect(() => {
     setResult(null);
@@ -161,7 +162,10 @@ const Problem = () => {
       <div className="wrapper">
         <div className="header">
           <div className="title">
-            문제 검색
+            <ProblemNumberInput />
+            <ProblemSearchButton>
+              <img src='/search.svg' alt='' width={24}/>
+            </ProblemSearchButton>
           </div>
           <div className="select-lang">
             <select
@@ -178,9 +182,24 @@ const Problem = () => {
 
         <main>
           <div className="problem" style={{ width: `${leftWidth}%` }}>
-            <div className="question">
-              문제
+            <div>
+              <h3>{problem.title}</h3>
             </div>
+            <div
+              dangerouslySetInnerHTML={{ __html: problem.descriptionHtml }}
+            />
+            <div
+              dangerouslySetInnerHTML={{ __html: problem.inputHtml }}
+            />
+            <div
+              dangerouslySetInnerHTML={{ __html: problem.outputHtml }}
+            />
+            <div
+              dangerouslySetInnerHTML={{ __html: problem.limitHtml }}
+            />
+            <div
+              dangerouslySetInnerHTML={{ __html: problem.examples }}
+            />
           </div>
           <div className="gutter" draggable="true" onDrag={handleDrag}></div>
           <div className="code-wrapper" style={{ width: `${100 - leftWidth}%` }}>
@@ -295,3 +314,31 @@ const Problem = () => {
 };
 
 export default Problem;
+
+const ProblemNumberInput = styled('input')`
+  padding: 0px 1.5rem 0px 1.0625rem;
+  width: 10rem;
+  height: 1.7rem;
+  background-color: #151f29;
+  border: 0.05rem solid #d5d5d5;
+  border-radius: 0.25rem;
+  appearance: none;
+  color: white;
+  caret-color: white;
+
+  &:hover, &:focus-within {
+    outline: none;
+    border: 0.05rem solid rgb(0, 120, 255);
+    box-shadow: rgb(0, 120, 255) 0px 0
+  }
+`
+
+const ProblemSearchButton = styled('button')`
+  position: absolute;
+  right: 0;
+  top: 2px;
+  width: 24px;
+  height: 24px;
+  background-color: transparent;
+  cursor: pointer;
+`
