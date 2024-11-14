@@ -75,7 +75,7 @@ table {
 }
 
 ::-webkit-scrollbar-thumb {
-	background-color: #d4d4d4;
+	background-color: #36475c;
 }
 
 .wrapper {
@@ -98,14 +98,14 @@ table {
 }
 
 main {
-    flex-grow: 1;
     display: flex;
+    height: calc(100vh - (3.5rem));
 }
 
 .problem {
-    width: 40%;
     height: 100%;
-    color: #e2e2e2;
+    padding: 16px;
+    color: #b2c0cc;
     overflow-y: auto;
     & .title {
         width: 100%;

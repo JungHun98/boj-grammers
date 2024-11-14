@@ -15,6 +15,32 @@ interface IDialog {
   text: string;
 }
 
+interface ProblemSectionProps {
+  title: string;
+  html: string;
+}
+
+interface ExampleProps {
+  content: string;
+}
+
+function ProblemSection({title, html}: ProblemSectionProps) {
+  return( 
+  <div>
+    <ProblemH6>{title}</ProblemH6>
+    <div dangerouslySetInnerHTML={{ __html: html}}></div>
+  </div>
+  )
+}
+
+function Example({content}: ExampleProps) {
+  return( 
+  <div>
+    <ExamplePre>{content}</ExamplePre>
+  </div>
+  )
+}
+
 const Problem = () => {
   const navigate = useNavigate();
   let blocker = useBlocker(true);
@@ -34,7 +60,12 @@ const Problem = () => {
   const [problem, setProblem] = useState({title:'', descriptionHtml:'', inputHtml: '',
     outputHtml: '',
     limitHtml: '',
-    examples: ''});
+    examples: [{
+      explain: '',
+      input: '',
+      number: 0,
+      output: '' 
+    }]});
 
   const handleDrag: DragEventHandler= (e) => {
     const newLeftWidth = (e.clientX / window.innerWidth) * 100;
@@ -80,7 +111,7 @@ const Problem = () => {
       const result = await fetch('http://localhost:8080/api/problem').then((response) => response.json());
       setProblem(result);
     }
-    // ft();
+    ft();
   }, []);
 
   useEffect(() => {
@@ -179,27 +210,26 @@ const Problem = () => {
             </select>
           </div>
         </div>
-
         <main>
-          <div className="problem" style={{ width: `${leftWidth}%` }}>
+          <div className="problem" style={{ width: `${leftWidth}%` }}>  
             <div>
               <h3>{problem.title}</h3>
             </div>
-            <div
-              dangerouslySetInnerHTML={{ __html: problem.descriptionHtml }}
-            />
-            <div
-              dangerouslySetInnerHTML={{ __html: problem.inputHtml }}
-            />
-            <div
-              dangerouslySetInnerHTML={{ __html: problem.outputHtml }}
-            />
-            <div
-              dangerouslySetInnerHTML={{ __html: problem.limitHtml }}
-            />
-            <div
-              dangerouslySetInnerHTML={{ __html: problem.examples }}
-            />
+            <ProblemSection title="문제설명" html={problem.descriptionHtml}/>
+            <ProblemSection title="입력" html={problem.inputHtml}/>
+            <ProblemSection title="출력" html={problem.outputHtml}/>
+            {problem.limitHtml !== null ? <ProblemSection title="제한" html={problem.limitHtml}/> : null}
+
+            {problem.examples!== null ? problem.examples.map(({explain, input, number, output}) => {
+              return (
+              <div key={number}>
+                <ProblemH6>예제 입력 {number}</ProblemH6>
+                <Example content={input}/>
+                <ProblemH6>예제 출력 {number}</ProblemH6>
+                <Example content={output}/>
+              </div>
+              )
+            }) : null}
           </div>
           <div className="gutter" draggable="true" onDrag={handleDrag}></div>
           <div className="code-wrapper" style={{ width: `${100 - leftWidth}%` }}>
@@ -341,4 +371,19 @@ const ProblemSearchButton = styled('button')`
   height: 24px;
   background-color: transparent;
   cursor: pointer;
+`
+
+const ProblemH6 = styled('h6')`
+font-weight: 700;
+font-size: 14px;
+    margin-bottom: 1rem;
+    color: white;
+`
+
+const ExamplePre = styled('pre')`
+  background: #202b3d;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 130%;
 `
