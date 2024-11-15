@@ -1,4 +1,4 @@
-import express, { Application } from "express";
+import express, { Application, response } from "express";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
@@ -32,24 +32,36 @@ const io = new Server(server, {
 problemSocket(io);
 
 app.get("/api/problem", async function (req, res) {
-  try{
-    const { id, title, descriptionHtml,
+  try {
+    const problemId = Number(req.query.problemId);
+    console.log(problemId);
+
+    if (!problemId || isNaN(problemId)) {
+      return res.status(400).send('유효하지 않은 번호입니다.');
+    }
+
+    // problemId를 problem 함수에 전달하여 데이터 가져오기
+    const {
+      id,
+      title,
+      descriptionHtml,
       inputHtml,
       outputHtml,
       limitHtml,
       examples
-    } = await problem(16946);
-    
-  res.json({  
-    id,
-    title,
-    descriptionHtml,
-    inputHtml,
-    outputHtml,
-    limitHtml,
-    examples
-  });
-  } catch(err) {
+    } = await problem(problemId);
+
+    // 데이터를 JSON 형식으로 응답
+    res.json({
+      id,
+      title,
+      descriptionHtml,
+      inputHtml,
+      outputHtml,
+      limitHtml,
+      examples
+    });
+  } catch (err) {
     res.status(500).send('Error fetching data');
   }
 });

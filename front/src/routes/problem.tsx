@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef, DragEventHandler } from "react";
+import { useState, useCallback, useEffect, useRef, DragEventHandler, ChangeEventHandler } from "react";
 import { useParams, useBlocker, useNavigate } from "react-router-dom";
 import CodeMirror from "@uiw/react-codemirror";
 import { copilot } from "@uiw/codemirror-theme-copilot";
@@ -41,6 +41,7 @@ function Example({content}: ExampleProps) {
   )
 }
 
+
 const Problem = () => {
   const navigate = useNavigate();
   let blocker = useBlocker(true);
@@ -66,6 +67,13 @@ const Problem = () => {
       number: 0,
       output: '' 
     }]});
+  const [problemNumber, setProblemNumber] = useState(1000);
+
+  async function ft () {
+    const result = await fetch(`http://localhost:8080/api/problem?problemId=${problemNumber}`).then((response) => response.json());
+    setProblem(result);
+  }
+  
 
   const handleDrag: DragEventHandler= (e) => {
     const newLeftWidth = (e.clientX / window.innerWidth) * 100;
@@ -80,6 +88,15 @@ const Problem = () => {
       setUpHeigth(newUpHegith);
     }
   };
+
+  const handleProblemInput: ChangeEventHandler<HTMLInputElement> = (e) => {
+    const inputElement = e.target;
+    setProblemNumber(Number(inputElement.value));
+  }
+
+  const handleSearchProblem = () => {
+    ft();
+  }
 
   // const onSubmit = useCallback(() => {
   //   setResult(null);
@@ -104,15 +121,6 @@ const Problem = () => {
   //     lang,
   //   });
   // }, [lang, problemId, socket]);
-
-  useEffect(() => {
-    async function ft () {
-
-      const result = await fetch('http://localhost:8080/api/problem').then((response) => response.json());
-      setProblem(result);
-    }
-    ft();
-  }, []);
 
   useEffect(() => {
     setResult(null);
@@ -193,8 +201,8 @@ const Problem = () => {
       <div className="wrapper">
         <div className="header">
           <div className="title">
-            <ProblemNumberInput />
-            <ProblemSearchButton>
+            <ProblemNumberInput onChange={handleProblemInput}/>
+            <ProblemSearchButton onClick={handleSearchProblem}>
               <img src='/search.svg' alt='' width={24}/>
             </ProblemSearchButton>
           </div>
