@@ -4,9 +4,14 @@ import {
   ProblemSearchButton,
   Wrapper,
 } from './ProblemSearch.style';
+import useProblemStore from '../../store/store';
 
 function ProblemSearch() {
   const [problemNumber, setProblemNumber] = useState(1000);
+  const updateProblemNumber = useProblemStore(
+    (state) => state.updateProblemNumber,
+  );
+
   const placeholderText = '백준 문제 번호를 입력해주세요.';
 
   const handleInputProblem: ChangeEventHandler<HTMLInputElement> = ({
@@ -15,7 +20,9 @@ function ProblemSearch() {
     setProblemNumber(Number(target.value));
   };
 
-  const handleSearchProblem = () => {};
+  const handleSearchProblem = () => {
+    updateProblemNumber(problemNumber);
+  };
 
   return (
     <Wrapper>
