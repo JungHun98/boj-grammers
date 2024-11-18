@@ -10,7 +10,7 @@ type Action = {
 
 // Create your store, which includes both state and (optionally) actions
 const useProblemStore = create<State & Action>((set) => ({
-  problemNumber: -1,
+  problemNumber: 1000,
   updateProblemNumber: (problemNumber) =>
     set(() => ({ problemNumber: problemNumber })),
 }));

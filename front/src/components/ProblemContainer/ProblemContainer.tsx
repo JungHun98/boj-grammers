@@ -1,22 +1,23 @@
 import useFetchProblem from '../../hooks/useFetchProblem';
+import useProblemStore from '../../store/store';
 import Example from '../Example';
 import ProblemSection from '../ProblemSection';
 import { ProblemH6, Wrapper } from './ProblemContainer.style';
 
 interface ProblemContainerProps {
   width: number;
-  problemId: number;
 }
 
-function ProblemContainer({ width, problemId }: ProblemContainerProps) {
-  const { data, error } = useFetchProblem(problemId);
+function ProblemContainer({ width }: ProblemContainerProps) {
+  const problemNumber = useProblemStore((state) => state.problemNumber);
+  const { data, error } = useFetchProblem(problemNumber);
 
   if (error) {
     return <div>Error: {error.message}</div>;
   }
 
   if (!data) {
-    return <div>Loading...</div>; // 데이터를 아직 불러오지 못한 상태
+    return <div>Loading...</div>;
   }
 
   return (
