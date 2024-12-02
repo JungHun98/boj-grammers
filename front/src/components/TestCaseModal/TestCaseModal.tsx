@@ -8,7 +8,11 @@ import {
 } from './TestCaseModal.style';
 import useProblemStore from '../../store/store';
 
-function TestCaseModal() {
+interface TestCaseModalProps {
+  onClose: () => void;
+}
+
+function TestCaseModal({ onClose }: TestCaseModalProps) {
   const exampleInput = useProblemStore((state) => state.exampleInput);
   const exampleOutput = useProblemStore((state) => state.exampleOutput);
 
@@ -34,6 +38,7 @@ function TestCaseModal() {
       <TestCaseBody>{exmapleContents}</TestCaseBody>
       <TestCaseBottom>
         <TestCaseAddButton>추가하기</TestCaseAddButton>
+        <TestCaseAddButton onClick={onClose}>완료</TestCaseAddButton>
       </TestCaseBottom>
     </Wrapper>
   );

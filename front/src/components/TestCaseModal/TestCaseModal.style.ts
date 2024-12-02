@@ -1,9 +1,12 @@
 import styled from '@emotion/styled';
 
 export const Wrapper = styled('div')`
-  max-width: 40rem;
+  position: relative;
+  min-width: 40rem;
   padding: 2rem;
   border: solid 1px #d7e2eb;
+  background-color: white;
+  z-index: 1;
 `;
 
 export const TestCaseTitle = styled('h3')`
@@ -22,10 +25,13 @@ export const TestCaseBody = styled('div')`
 `;
 
 export const TestCaseBottom = styled('div')`
+  display: flex;
+  justify-content: flex-end;
   padding: 2.5rem 0 0 2.5rem;
   text-align: right;
   width: 100%;
   overflow: auto;
+  gap: 1rem;
 `;
 
 export const TestCaseAddButton = styled('button')`
