@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import useFetchProblem from '../../hooks/useFetchProblem';
 import useProblemStore from '../../store/store';
 import Example from '../Example';
@@ -10,7 +11,24 @@ interface ProblemContainerProps {
 
 function ProblemContainer({ width }: ProblemContainerProps) {
   const problemNumber = useProblemStore((state) => state.problemNumber);
+
+  const updateExampleInput = useProblemStore(
+    (state) => state.updateExampleInput,
+  );
+  const updateExampleOutput = useProblemStore(
+    (state) => state.updateExampleOutput,
+  );
   const { data, error } = useFetchProblem(problemNumber);
+
+  useEffect(() => {
+    if (data?.examples?.length !== undefined) {
+      const exampleInput = data.examples.map(({ input }) => input);
+      const exampleOutput = data.examples.map(({ output }) => output);
+
+      updateExampleInput(exampleInput);
+      updateExampleOutput(exampleOutput);
+    }
+  }, [data, updateExampleInput, updateExampleOutput]);
 
   if (error) {
     return <div>Error: {error.message}</div>;
