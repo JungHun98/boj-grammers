@@ -54,3 +54,20 @@ export const TestCasePre = styled('pre')`
   font-weight: 600;
   line-height: 130%;
 `;
+
+export const Flex = styled('div')`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const CancleIcon = styled('img')`
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+
+  &:hover {
+    filter: invert(19%) sepia(91%) saturate(7462%) hue-rotate(1deg)
+      brightness(95%) contrast(120%);
+  }
+`;

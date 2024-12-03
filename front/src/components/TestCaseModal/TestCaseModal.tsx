@@ -5,6 +5,8 @@ import {
   TestCasePre,
   TestCaseBottom,
   TestCaseAddButton,
+  CancleIcon,
+  Flex,
 } from './TestCaseModal.style';
 import useProblemStore from '../../store/store';
 
@@ -16,16 +18,38 @@ interface TestCaseModalProps {
 function TestCaseModal({ onClose, onOpen }: TestCaseModalProps) {
   const exampleInput = useProblemStore((state) => state.exampleInput);
   const exampleOutput = useProblemStore((state) => state.exampleOutput);
+  const updateExampleInput = useProblemStore(
+    (state) => state.updateExampleInput,
+  );
+  const updateExampleOutput = useProblemStore(
+    (state) => state.updateExampleOutput,
+  );
 
   const exampleLengthArr = Array.from(
     { length: exampleInput.length },
     (_, i) => `예제 ${i + 1}`,
   );
 
+  const handleDeleteCase = (removeIdx: number) => {
+    const newInput = exampleInput.filter((_, index) => index !== removeIdx);
+    const newOutput = exampleOutput.filter((_, index) => index !== removeIdx);
+
+    updateExampleInput(newInput);
+    updateExampleOutput(newOutput);
+  };
+
   const exmapleContents = exampleLengthArr.map((elem, idx) => {
     return (
       <div key={elem}>
-        <h6>예제 입력 {idx + 1}</h6>
+        <h6>
+          <Flex>
+            예제 입력 {idx + 1}{' '}
+            <CancleIcon
+              src="cancle-circle-svgrepo-com.svg"
+              onClick={() => handleDeleteCase(idx)}
+            />
+          </Flex>
+        </h6>
         <TestCasePre>{exampleInput[idx]}</TestCasePre>
         <h6>예제 출력 {idx + 1}</h6>
         <TestCasePre>{exampleOutput[idx]}</TestCasePre>
