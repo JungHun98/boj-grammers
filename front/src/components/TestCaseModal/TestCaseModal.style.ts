@@ -6,7 +6,6 @@ export const Wrapper = styled('div')`
   padding: 2rem;
   border: solid 1px #d7e2eb;
   background-color: white;
-  z-index: 1;
 `;
 
 export const TestCaseTitle = styled('h3')`
