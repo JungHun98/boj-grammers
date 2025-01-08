@@ -17,27 +17,30 @@ import { defaultCode } from '../utils/consts';
 
 import ProblemSearch from '../components/ProblemSearch';
 import ProblemContainer from '../components/ProblemContainer';
+import styled from '@emotion/styled';
 
 interface IDialog {
   title: string;
   text: string;
 }
 
-const Problem = () => {
+interface ProblemProps {
+  onOpen: () => void;
+}
+
+const Problem = ({ onOpen }: ProblemProps) => {
   const navigate = useNavigate();
   let blocker = useBlocker(true);
 
-  const dialogRef = useRef<HTMLDialogElement>(null);
   const codeRef = useRef<string>();
 
   const [leftWidth, setLeftWidth] = useState(40);
-  const [upHeigth, setUpHeigth] = useState(40);
+  const [upHeigth, setUpHeigth] = useState(60);
 
   const [lang, setLang] = useState<LanguageName>('javascript');
   const [result, setResult] = useState<IOutput[] | null>();
   const [output, setOutput] = useState<IOutput[] | null>();
   const [error, setError] = useState<string | null>();
-  const [dialogText, setDialogText] = useState<IDialog | null>();
 
   const handleDrag: DragEventHandler = (e) => {
     const newLeftWidth = (e.clientX / window.innerWidth) * 100;
@@ -81,7 +84,7 @@ const Problem = () => {
 
   useEffect(() => {
     setResult(null);
-    setOutput(null);
+    setOutput([{ index: 0, input: '1', output: '2', result: '정답' }]);
     setError(null);
     switch (lang) {
       case 'javascript':
@@ -172,7 +175,7 @@ const Problem = () => {
         </div>
         <main>
           <ProblemContainer width={leftWidth} />
-          <div className="gutter" draggable="true" onDrag={handleDrag}></div>
+          <div className="gutter" draggable="true" onDrag={handleDrag} />
           <div
             className="code-wrapper"
             style={{ width: `${100 - leftWidth}%` }}
@@ -200,7 +203,7 @@ const Problem = () => {
               ></div>
 
               <div className="output" style={{ height: `${100 - upHeigth}%` }}>
-                {error ? (
+                {error !== null ? (
                   <p
                     style={{
                       margin: '0px',
@@ -268,29 +271,34 @@ const Problem = () => {
               </div>
             </div>
             <div className="submit">
-              {/* <button type="button" onClick={onClickCodeRun}>
-                코드 실행
-              </button> */}
-              {/* <button type="button" onClick={onSubmit}>
-                제출하기
-              </button> */}
+              <div>
+                <Button onClick={onOpen}>테스트 케이스 추가하기</Button>
+              </div>
+              <div>
+                <Button>코드 실행</Button>
+              </div>
             </div>
           </div>
         </main>
       </div>
-      <dialog ref={dialogRef}>
-        <div className="dialog-content">
-          <div className="inner">
-            <h4>{dialogText?.title}</h4>
-            <p>{dialogText?.text}</p>
-            <form method="dialog">
-              <button>닫기</button>
-            </form>
-          </div>
-        </div>
-      </dialog>
     </>
   );
 };
 
 export default Problem;
+
+const Button = styled('button')`
+  margin: 0;
+  padding: 0.4375rem 0.8125rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  background-color: #44576c;
+  color: white;
+  cursor: pointer;
+  border-radius: 0.25rem;
+
+  &: hover {
+    border-color: #37485d;
+    background-color: #37485d;
+  }
+`;
