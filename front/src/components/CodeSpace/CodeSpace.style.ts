@@ -1,0 +1,14 @@
+import styled from '@emotion/styled';
+
+export const Wrapper = styled('div')<{ height: number }>`
+  width: 100%;
+  height: ${(props) => props.height}%;
+  border-left: 1px solid #414547;
+  background-color: #22292e;
+  overflow: auto;
+
+  & .cm-editor * {
+    font-family: Menlo, Monaco, 'Source Code Pro', consolas, monospace;
+    font-size: 18px;
+  }
+`;
