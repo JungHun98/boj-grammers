@@ -1,16 +1,8 @@
-import {
-  useState,
-  useCallback,
-  useEffect,
-  useRef,
-  DragEventHandler,
-} from 'react';
-import { useParams, useBlocker, useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef, DragEventHandler } from 'react';
+import { useBlocker, useNavigate } from 'react-router-dom';
 
-import CodeMirror from '@uiw/react-codemirror';
-import { copilot } from '@uiw/codemirror-theme-copilot';
 import io from 'socket.io-client';
-import { LanguageName, loadLanguage } from '@uiw/codemirror-extensions-langs';
+import { LanguageName } from '@uiw/codemirror-extensions-langs';
 
 import { IOutput, IProblem } from '../types';
 import { defaultCode } from '../utils/consts';
@@ -18,6 +10,8 @@ import { defaultCode } from '../utils/consts';
 import ProblemSearch from '../components/ProblemSearch';
 import ProblemContainer from '../components/ProblemContainer';
 import styled from '@emotion/styled';
+import CodeSpace from '../components/CodeSpace';
+import LangSelect from '../components/LangSelect';
 
 interface IDialog {
   title: string;
@@ -88,7 +82,7 @@ const Problem = ({ onOpen }: ProblemProps) => {
     setError(null);
     switch (lang) {
       case 'javascript':
-        codeRef.current = defaultCode.javscript;
+        codeRef.current = defaultCode.javascript;
         break;
       case 'python':
         codeRef.current = defaultCode.python;
@@ -157,131 +151,102 @@ const Problem = ({ onOpen }: ProblemProps) => {
   }, [blocker, navigate]);
 
   return (
-    <>
-      <div className="wrapper">
-        <div className="header">
-          <ProblemSearch />
-          <div className="select-lang">
-            <select
-              onChange={(e) => setLang(e.target.value as LanguageName)}
-              defaultValue="Javascript"
-            >
-              <option>javascript</option>
-              <option>python</option>
-              <option>java</option>
-              <option>cpp</option>
-            </select>
+    <div className="wrapper">
+      <div className="header">
+        <ProblemSearch />
+        <LangSelect />
+      </div>
+      <main>
+        <ProblemContainer width={leftWidth} />
+        <div className="gutter" draggable="true" onDrag={handleDrag} />
+        <div className="code-wrapper" style={{ width: `${100 - leftWidth}%` }}>
+          <div className="solution-wrapper">
+            <CodeSpace height={upHeigth} />
+            <div
+              className="gutter_vertical"
+              draggable="true"
+              onDrag={handleVirticalDrag}
+            ></div>
+
+            <div className="output" style={{ height: `${100 - upHeigth}%` }}>
+              {error !== null ? (
+                <p
+                  style={{
+                    margin: '0px',
+                    color: '#c92c2c',
+                    whiteSpace: 'pre-wrap',
+                  }}
+                >
+                  {error}
+                </p>
+              ) : (
+                <>
+                  {output && (
+                    <>
+                      <h3>실행 결과</h3>
+                      {output.map((v, i) => {
+                        const input = v.input?.includes('\\n')
+                          ? v.input.split('\\n').join('\n')
+                          : v.input;
+                        const output =
+                          typeof v.output === 'string' &&
+                          v.output.includes('\\n')
+                            ? v.output.split('\\n').join('\n')
+                            : v.output;
+                        const result =
+                          typeof v.result === 'string' &&
+                          v.result.includes('\\n')
+                            ? v.result.split('\\n').join('\n')
+                            : v.result;
+
+                        return (
+                          <table className="code-output" key={i}>
+                            <tbody>
+                              <tr>
+                                <th>입력값</th>
+                                <td style={{ whiteSpace: 'pre-line' }}>
+                                  {input ?? '로딩중...'}
+                                </td>
+                              </tr>
+                              <tr>
+                                <th>기댓값</th>
+                                <td style={{ whiteSpace: 'pre-line' }}>
+                                  {output ?? '로딩중...'}
+                                </td>
+                              </tr>
+                              <tr>
+                                <th>출력</th>
+                                <td style={{ whiteSpace: 'pre-line' }}>
+                                  {result ?? '로딩중...'}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        );
+                      })}
+                    </>
+                  )}
+                  {result && (
+                    <>
+                      <h3>체점 결과</h3>
+                      <ul className="result-list"></ul>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+          <div className="submit">
+            <div>
+              <Button onClick={onOpen}>테스트 케이스 추가하기</Button>
+            </div>
+            <div>
+              <Button>코드 실행</Button>
+            </div>
           </div>
         </div>
-        <main>
-          <ProblemContainer width={leftWidth} />
-          <div className="gutter" draggable="true" onDrag={handleDrag} />
-          <div
-            className="code-wrapper"
-            style={{ width: `${100 - leftWidth}%` }}
-          >
-            <div className="solution-wrapper">
-              <div
-                className="codeMirror-wrapper"
-                style={{ height: `${upHeigth}%` }}
-              >
-                <CodeMirror
-                  value={codeRef.current}
-                  onChange={(e) => {
-                    codeRef.current = e;
-                  }}
-                  theme={copilot}
-                  height="100%"
-                  extensions={[loadLanguage(`${lang}`)!]}
-                />
-              </div>
-
-              <div
-                className="gutter_vertical"
-                draggable="true"
-                onDrag={handleVirticalDrag}
-              ></div>
-
-              <div className="output" style={{ height: `${100 - upHeigth}%` }}>
-                {error !== null ? (
-                  <p
-                    style={{
-                      margin: '0px',
-                      color: '#c92c2c',
-                      whiteSpace: 'pre-wrap',
-                    }}
-                  >
-                    {error}
-                  </p>
-                ) : (
-                  <>
-                    {output && (
-                      <>
-                        <h3>실행 결과</h3>
-                        {output.map((v, i) => {
-                          const input = v.input?.includes('\\n')
-                            ? v.input.split('\\n').join('\n')
-                            : v.input;
-                          const output =
-                            typeof v.output === 'string' &&
-                            v.output.includes('\\n')
-                              ? v.output.split('\\n').join('\n')
-                              : v.output;
-                          const result =
-                            typeof v.result === 'string' &&
-                            v.result.includes('\\n')
-                              ? v.result.split('\\n').join('\n')
-                              : v.result;
-
-                          return (
-                            <table className="code-output" key={i}>
-                              <tbody>
-                                <tr>
-                                  <th>입력값</th>
-                                  <td style={{ whiteSpace: 'pre-line' }}>
-                                    {input ?? '로딩중...'}
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <th>기댓값</th>
-                                  <td style={{ whiteSpace: 'pre-line' }}>
-                                    {output ?? '로딩중...'}
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <th>출력</th>
-                                  <td style={{ whiteSpace: 'pre-line' }}>
-                                    {result ?? '로딩중...'}
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          );
-                        })}
-                      </>
-                    )}
-                    {result && (
-                      <>
-                        <h3>체점 결과</h3>
-                        <ul className="result-list"></ul>
-                      </>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-            <div className="submit">
-              <div>
-                <Button onClick={onOpen}>테스트 케이스 추가하기</Button>
-              </div>
-              <div>
-                <Button>코드 실행</Button>
-              </div>
-            </div>
-          </div>
-        </main>
-      </div>
-    </>
+      </main>
+    </div>
   );
 };
 
