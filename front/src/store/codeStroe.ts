@@ -1,16 +1,14 @@
 import { create } from 'zustand';
-import { LanguageName } from '@uiw/codemirror-extensions-langs';
 import { defaultCode } from '../utils/consts';
 
+type Language = 'cpp' | 'python' | 'java' | 'javascript';
+
 type codeSet = {
-  cpp: string;
-  python: string;
-  java: string;
-  javascript: string;
+  [key in Language]: string;
 };
 
 type State = {
-  language: LanguageName;
+  language: Language;
   code: codeSet;
 };
 
