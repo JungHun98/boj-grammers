@@ -1,6 +1,6 @@
 export const defaultCode = {
-  python: ``,
-  javscript: ``,
+  python: `print("Hello, world")`,
+  javascript: `console.log("Hello, world");`,
   java: `import java.util.*;
 import java.io.*;
 
