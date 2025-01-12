@@ -4,28 +4,29 @@ import { testcaseRun } from "./testcase-run";
 import { codeRun } from "./code-run";
 import { exec } from "child_process";
 
+type Langauge = 'cpp' | 'python' | 'java' | 'javascript';
+
 export interface IData {
   id: string;
   code: string;
-  lang: string;
+  lang: Langauge;
   room: string;
 }
 
+export interface TestData {
+  code: string;
+  lang: Langauge;
+  input: string[];
+}
+
 export const problemSocket = (io: Server) => {
-  const problem = io.of("/problem");
+  const problem = io.of("/");
 
   problem.on("connection", (socket: any) => {
     console.log("connected");
-    socket.room = "";
 
-    socket.on("codeRun", async (data: IData) => {
-      socket.room = data.room;
+    socket.on("codeRun", async (data: TestData) => {
       codeRun(socket, data);
-    });
-
-    socket.on("submit", async (data: IData) => {
-      socket.room = data.room;
-      testcaseRun(socket, data);
     });
 
     socket.on("disconnect", () => {
