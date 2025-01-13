@@ -35,11 +35,12 @@ export const codeRun = (socket: any, data: TestData) => {
   );
 
   fs.writeFileSync(`${filePath}/${fileName[lang]}`, code);
+
   try {
     execSync(`docker cp compile/. test-app:/usr/src`);
   } catch (err) {
-    console.error(err);
-    socket.emit("error", "not compile");
+    console.error("에러");
+    socket.emit("error", "compile");
     return;
   }
 
@@ -67,16 +68,21 @@ export const codeRun = (socket: any, data: TestData) => {
     
     if (!run) return;
   
-    executeCommand(test, compile, run, (err: string, res: any) => {
-      if (err) {
-        socket.emit("error", err);
-        return;
-      }
-  
-      const result = typeof res === "object" ? JSON.parse(res) : res;
-      clientResult[i] = { result };
-      socket.emit("output", clientResult);
-    });
+    try {
+
+      executeCommand(test, compile, run, (err: string, res: any) => {
+        if (err) {
+          socket.emit("error", err);
+          return;
+        }
+        
+        const result = typeof res === "object" ? JSON.parse(res) : res;
+        clientResult[i] = { result };
+        socket.emit("output", clientResult);
+      });
+    } catch(err: any) {
+      socket.emit("error", err.message);
+    }
   });
 
   cleanDirectory(filePath);
