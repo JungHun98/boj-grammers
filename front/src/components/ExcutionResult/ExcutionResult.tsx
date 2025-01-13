@@ -9,12 +9,25 @@ interface ExcutionResultProps {
 function ExcutionResult({ height }: ExcutionResultProps) {
   const socket = useSocket('http://localhost:8080');
   const [error, setError] = useState(null);
-  const [result, setResult] = useState(null);
+  const [result, setResult] = useState<string[]>([]);
 
-  const excuteContent = error !== null ? <ErrorPre>{error}</ErrorPre> : ['ddd'];
+  const excuteContent =
+    error !== null ? (
+      <ErrorPre>{error}</ErrorPre>
+    ) : (
+      result.map((elem) => <div key={`${elem}`}>{elem}</div>)
+    );
 
   useEffect(() => {
     if (socket !== null) {
+      socket.on('output', (data) => {
+        if (error !== null) {
+          setError(null);
+        }
+        console.log(data);
+        setResult(data);
+      });
+
       socket.on('error', (data) => {
         const result = data.split('\n').slice(1).join('\n');
         setError(result);
