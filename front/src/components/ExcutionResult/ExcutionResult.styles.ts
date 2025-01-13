@@ -15,11 +15,12 @@ export const Wrapper = styled('div')`
 `;
 
 export const ErrorPre = styled('pre')`
+  font-family: Menlo, Monaco, 'Source Code Pro', consolas, monospace;
+  line-height: 1.8;
   margin: 0;
   padding: 0;
   color: red;
   font-size: 14px;
   font-weight: 600;
-  line-height: 130%;
   background-color: transparent;
 `;

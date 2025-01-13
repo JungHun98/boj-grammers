@@ -8,7 +8,7 @@ interface ExcutionResultProps {
 
 function ExcutionResult({ height }: ExcutionResultProps) {
   const socket = useSocket('http://localhost:8080');
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<string[]>([]);
 
   const excuteContent =
@@ -24,7 +24,7 @@ function ExcutionResult({ height }: ExcutionResultProps) {
         if (error !== null) {
           setError(null);
         }
-        console.log(data);
+
         setResult(data);
       });
 
