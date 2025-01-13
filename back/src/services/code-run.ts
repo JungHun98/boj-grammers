@@ -6,10 +6,6 @@ import { cleanDirectory } from "../helper/clean-directory";
 import { execSync } from "child_process";
 import { fileName, filePath } from "../consts";
 
-interface IClientResult {
-  result: any | null;
-}
-
 const executeCommand = (param: string, compileCommand: string | null, runCommand: string, callback: (err: string, res: any) => void) => {
   const formattedParam = param.split('\n').join('\\n');
 
@@ -25,14 +21,7 @@ const executeCommand = (param: string, compileCommand: string | null, runCommand
 export const codeRun = (socket: any, data: TestData) => {
   const { code, lang, input } = data;
 
-  const clientResult: IClientResult[] = Array.from(
-    { length: input.length },
-    (_, i) => ({
-      input: null,
-      output: null,
-      result: null,
-    })
-  );
+  const clientResult: string[] = Array(input.length).fill(null);
 
   fs.writeFileSync(`${filePath}/${fileName[lang]}`, code);
 
@@ -77,7 +66,7 @@ export const codeRun = (socket: any, data: TestData) => {
         }
         
         const result = typeof res === "object" ? JSON.parse(res) : res;
-        clientResult[i] = { result };
+        clientResult[i] = result;
         socket.emit("output", clientResult);
       });
     } catch(err: any) {
