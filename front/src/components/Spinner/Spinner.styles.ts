@@ -1,7 +1,7 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 
-const spin = keyframes`100%
+const spin = keyframes`
   100%
   {
     transform: rotate(360deg);
@@ -16,7 +16,7 @@ export const Wrapper = styled('div')`
   height: 100%;
 `;
 
-export const Spinner = styled('div')`
+export const Circle = styled('div')`
   margin: calc(50% - 25px) auto;
   width: 50px;
   height: 50px;
@@ -24,6 +24,5 @@ export const Spinner = styled('div')`
   box-sizing: border-box;
   border-top-color: white;
   border-radius: 100%;
-
   animation: ${spin} 1s ease-in-out infinite;
 `;

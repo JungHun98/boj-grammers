@@ -1,9 +1,9 @@
-import { Wrapper } from './Spinner.styles';
+import { Circle, Wrapper } from './Spinner.styles';
 
 function Spinner() {
   return (
     <Wrapper>
-      <Spinner />
+      <Circle />
     </Wrapper>
   );
 }
