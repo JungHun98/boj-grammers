@@ -1,22 +1,43 @@
 import { useEffect, useState } from 'react';
 import { ErrorPre, Wrapper } from './ExcutionResult.styles';
 import useSocket from '../../hooks/useSocket';
+import useProblemStore from '../../store/store';
+import ResultTable from '../ResultTable';
 
 interface ExcutionResultProps {
   height: number;
 }
 
+interface ResultInfo {
+  input: string;
+  output: string;
+  result: string | null;
+}
+
 function ExcutionResult({ height }: ExcutionResultProps) {
   const socket = useSocket('http://localhost:8080');
   const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<string[]>([]);
+  const [excuteResult, setExcuteResult] = useState<string[]>([]);
 
-  const excuteContent =
-    error !== null ? (
-      <ErrorPre>{error}</ErrorPre>
-    ) : (
-      result.map((elem) => <div key={`${elem}`}>{elem}</div>)
-    );
+  const problemNuber = useProblemStore((state) => state.problemNumber);
+  const exampleInput = useProblemStore((state) => state.exampleInput);
+  const exampleOutput = useProblemStore((state) => state.exampleOutput);
+
+  const makeRsultTable = () => {
+    const resultArray: ResultInfo[] = Array(excuteResult.length);
+
+    for (let i = 0; i < excuteResult.length; i++) {
+      const input = exampleInput[i];
+      const output = exampleOutput[i];
+      const result = excuteResult[i] === null ? null : excuteResult[i];
+
+      resultArray[i] = { input, output, result };
+    }
+
+    return resultArray.map((info, index) => (
+      <ResultTable key={index} {...info} />
+    ));
+  };
 
   useEffect(() => {
     if (socket !== null) {
@@ -25,7 +46,7 @@ function ExcutionResult({ height }: ExcutionResultProps) {
           setError(null);
         }
 
-        setResult(data);
+        setExcuteResult(data);
       });
 
       socket.on('error', (data) => {
@@ -35,12 +56,18 @@ function ExcutionResult({ height }: ExcutionResultProps) {
     }
   }, [socket]);
 
+  useEffect(() => {
+    setExcuteResult([]);
+  }, [problemNuber]);
+
   return (
     <Wrapper style={{ height: `${100 - height}%` }}>
-      {error === null && result === null ? (
+      {error === null && excuteResult.length === 0 ? (
         <h3>여기에 실행 결과가 표시됩니다.</h3>
+      ) : error !== null ? (
+        <ErrorPre>{error}</ErrorPre>
       ) : (
-        excuteContent
+        makeRsultTable()
       )}
     </Wrapper>
   );
