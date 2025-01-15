@@ -52,13 +52,14 @@ export const codeRun = (socket: any, data: TestData) => {
     }
   };
 
+  socket.emit("start", clientResult);
+
   input.forEach((test, i) => {
     const { compile, run } = languageCommands[lang] || {};
     
     if (!run) return;
   
     try {
-
       executeCommand(test, compile, run, (err: string, res: any) => {
         if (err) {
           socket.emit("error", err);

@@ -17,7 +17,7 @@ interface ResultInfo {
 function ExcutionResult({ height }: ExcutionResultProps) {
   const socket = useSocket('http://localhost:8080');
   const [error, setError] = useState<string | null>(null);
-  const [excuteResult, setExcuteResult] = useState<string[]>([]);
+  const [excuteResult, setExcuteResult] = useState<string | null[]>([null]);
 
   const problemNuber = useProblemStore((state) => state.problemNumber);
   const exampleInput = useProblemStore((state) => state.exampleInput);
@@ -41,6 +41,10 @@ function ExcutionResult({ height }: ExcutionResultProps) {
 
   useEffect(() => {
     if (socket !== null) {
+      socket.on('start', (data) => {
+        setExcuteResult(data);
+      });
+
       socket.on('output', (data) => {
         if (error !== null) {
           setError(null);
