@@ -6,7 +6,7 @@ const spin = keyframes`
   {
     transform: rotate(360deg);
   }
-}`;
+`;
 
 export const Wrapper = styled('div')`
   display: flex;
