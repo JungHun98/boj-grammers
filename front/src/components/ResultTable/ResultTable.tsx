@@ -1,3 +1,4 @@
+import Loder from '../Loder';
 import { Table } from './ResultTable.styles';
 
 interface ResultTableProps {
@@ -19,8 +20,14 @@ function ResultTable({ input, output, result }: ResultTableProps) {
           <td style={{ whiteSpace: 'pre-line' }}>{output}</td>
         </tr>
         <tr>
-          <th>출력</th>
-          <td style={{ whiteSpace: 'pre-line' }}>{result ?? '로딩중...'}</td>
+          <th>실행 결과</th>
+          {result === null ? (
+            <td style={{ padding: 0 }}>
+              <Loder />
+            </td>
+          ) : (
+            <td style={{ whiteSpace: 'pre-line' }}>{result}</td>
+          )}
         </tr>
       </tbody>
     </Table>
