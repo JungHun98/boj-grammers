@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
-import useFetchProblem from '../../hooks/useFetchProblem';
-import useProblemStore from '../../store/store';
-import Example from '../Example';
-import ProblemSection from '../ProblemSection';
+import useFetchProblem from '@/hooks/useFetchProblem';
+import useProblemStore from '@/store/store';
+import Example from '@/components/Example';
+import ProblemSection from '@/components/ProblemSection';
+import Spinner from '@/components/Spinner';
 import { ProblemH6, Wrapper } from './ProblemContainer.style';
-import Spinner from '../Spinner';
 
 interface ProblemContainerProps {
   width: number;
@@ -55,7 +55,7 @@ function ProblemContainer({ width }: ProblemContainerProps) {
             <ProblemSection title="제한" html={data.limitHtml} />
           ) : null}
           {data.examples !== null
-            ? data.examples.map(({ explain, input, number, output }) => {
+            ? data.examples.map(({ input, number, output }) => {
                 return (
                   <div key={number}>
                     <ProblemH6>예제 입력 {number}</ProblemH6>

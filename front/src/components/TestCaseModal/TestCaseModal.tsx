@@ -8,7 +8,7 @@ import {
   CancleIcon,
   Flex,
 } from './TestCaseModal.style';
-import useProblemStore from '../../store/store';
+import useProblemStore from '@/store/store';
 
 interface TestCaseModalProps {
   onClose: () => void;

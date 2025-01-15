@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { ErrorPre, Wrapper } from './ExcutionResult.styles';
-import useSocket from '../../hooks/useSocket';
-import useProblemStore from '../../store/store';
-import ResultTable from '../ResultTable';
+import useSocket from '@/hooks/useSocket';
+import useProblemStore from '@/store/store';
+import ResultTable from '@/components/ResultTable';
 
 interface ExcutionResultProps {
   height: number;

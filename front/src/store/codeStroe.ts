@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { defaultCode } from '../utils/consts';
+import { defaultCode } from '@/utils/consts';
 
 type Language = 'cpp' | 'python' | 'java' | 'javascript';
 

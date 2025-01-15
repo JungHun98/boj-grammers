@@ -1,9 +1,8 @@
-import CodeMirror, { ViewUpdate } from '@uiw/react-codemirror';
+import CodeMirror from '@uiw/react-codemirror';
 import { copilot } from '@uiw/codemirror-theme-copilot';
 import { loadLanguage } from '@uiw/codemirror-extensions-langs';
 import { Wrapper } from './CodeSpace.style';
-import useCodeStore from '../../store/codeStroe';
-import { ChangeEventHandler } from 'react';
+import useCodeStore from '@/store/codeStroe';
 
 interface CodeSpaceProps {
   height: number;
@@ -14,7 +13,7 @@ function CodeSpace({ height }: CodeSpaceProps) {
   const codeSet = useCodeStore((state) => state.code);
   const updateCode = useCodeStore((state) => state.updateCode);
 
-  const handleInputCode = (value: string, viewUpdate: ViewUpdate) => {
+  const handleInputCode = (value: string) => {
     updateCode(lang, value);
   };
 

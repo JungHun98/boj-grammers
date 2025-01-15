@@ -6,7 +6,7 @@ import {
   TestCaseArea,
   Wrapper,
 } from './AdditionalTestCaseModal.style';
-import useProblemStore from '../../store/store';
+import useProblemStore from '@/store/store';
 
 interface AdditionalTestCaseModalProps {
   onClose: () => void;

@@ -1,4 +1,4 @@
-import useCodeStore from '../../store/codeStroe';
+import useCodeStore from '@/store/codeStroe';
 import { Wrapper } from './LangSelect.style';
 
 type Language = 'cpp' | 'python' | 'java' | 'javascript';

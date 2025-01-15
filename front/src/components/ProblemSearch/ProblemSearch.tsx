@@ -4,7 +4,7 @@ import {
   ProblemSearchButton,
   Wrapper,
 } from './ProblemSearch.style';
-import useProblemStore from '../../store/store';
+import useProblemStore from '@/store/store';
 
 function ProblemSearch() {
   const [problemNumber, setProblemNumber] = useState(1000);

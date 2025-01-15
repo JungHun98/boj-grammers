@@ -1,4 +1,4 @@
-import Loder from '../Loder';
+import Loder from '@/components/Loder';
 import { Table } from './ResultTable.styles';
 
 interface ResultTableProps {

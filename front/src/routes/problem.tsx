@@ -1,13 +1,13 @@
 import { useState, useEffect, DragEventHandler } from 'react';
 import { useBlocker, useNavigate } from 'react-router-dom';
-
-import ProblemSearch from '../components/ProblemSearch';
-import ProblemContainer from '../components/ProblemContainer';
 import styled from '@emotion/styled';
-import CodeSpace from '../components/CodeSpace';
-import LangSelect from '../components/LangSelect';
-import CodeRunButton from '../components/CodeRunButton/CodeRunButton';
-import ExcutionResult from '../components/ExcutionResult';
+
+import ProblemSearch from '@/components/ProblemSearch';
+import ProblemContainer from '@/components/ProblemContainer';
+import CodeSpace from '@/components/CodeSpace';
+import LangSelect from '@/components/LangSelect';
+import CodeRunButton from '@/components/CodeRunButton/CodeRunButton';
+import ExcutionResult from '@/components/ExcutionResult';
 
 interface ProblemProps {
   onOpen: () => void;

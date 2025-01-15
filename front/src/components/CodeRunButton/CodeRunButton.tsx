@@ -1,7 +1,7 @@
-import { Button } from '../common/Button';
-import useSocket from '../../hooks/useSocket';
-import useCodeStore from '../../store/codeStroe';
-import useProblemStore from '../../store/store';
+import { Button } from '@/components/common/Button';
+import useSocket from '@/hooks/useSocket';
+import useCodeStore from '@/store/codeStroe';
+import useProblemStore from '@/store/store';
 
 function CodeRunButton() {
   const socket = useSocket('http://localhost:8080');
