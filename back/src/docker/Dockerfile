@@ -5,3 +5,4 @@ RUN apk add g++
 COPY input.sh /usr/src
 WORKDIR /usr/src
 VOLUME ["/app"]
+CMD ["tail", "-f", "/dev/null"]
