@@ -23,3 +23,11 @@ export const Table = styled('table')`
     }
   }
 `;
+
+export const Success = styled('span')`
+  color: blue;
+`
+
+export const Fail = styled('pre')`
+  color: red;
+`

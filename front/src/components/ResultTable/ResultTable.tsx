@@ -1,5 +1,5 @@
 import Loder from '@/components/Loder';
-import { Table } from './ResultTable.styles';
+import { Fail, Success, Table } from './ResultTable.styles';
 
 interface ResultTableProps {
   input: string;
@@ -8,16 +8,24 @@ interface ResultTableProps {
 }
 
 function ResultTable({ input, output, result }: ResultTableProps) {
+  const compareResult = () => {
+    const outputArr = output.split('\n');
+    const resultArr = result!.split('\n');
+
+    return outputArr.every((str, index) => str.trim() === resultArr[index].trim());
+  }
+
   return (
     <Table>
       <tbody>
         <tr>
           <th>입력값</th>
-          <td style={{ whiteSpace: 'pre-line' }}>{input}</td>
+          <td style={{ whiteSpace: 'pre-line' }}>
+            <pre>{input}</pre></td>
         </tr>
         <tr>
           <th>기댓값</th>
-          <td style={{ whiteSpace: 'pre-line' }}>{output}</td>
+          <td style={{ whiteSpace: 'pre-line' }}><pre>{output}</pre></td>
         </tr>
         <tr>
           <th>실행 결과</th>
@@ -26,7 +34,9 @@ function ResultTable({ input, output, result }: ResultTableProps) {
               <Loder />
             </td>
           ) : (
-            <td style={{ whiteSpace: 'pre-line' }}>{result}</td>
+            <td style={{ whiteSpace: 'pre-line' }}>
+              {compareResult() ? <Success>테스트를 통과했습니다.</Success>: <Fail>{result}</Fail>}
+            </td>
           )}
         </tr>
       </tbody>
