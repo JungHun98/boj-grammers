@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { requestProblem } from '@/apis/problemApi';
 
 interface ExampleInputOutput {
   explain: string;
@@ -27,16 +28,9 @@ function useFetchProblem(pId: number): {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch(
-          `http://localhost:8080/api/problem?problemId=${pId}`,
-        );
-
-        if (!response.ok) {
-          throw new Error('Failed to fetch data');
-        }
-
-        const data: ProblemContent = await response.json();
-        setData(data);
+        const response = await requestProblem(pId);
+        console.log(response);
+        setData(response.data);
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err);

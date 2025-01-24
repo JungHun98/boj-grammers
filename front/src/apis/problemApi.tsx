@@ -1,11 +1,9 @@
-import axios from "axios";
+import axios from 'axios';
 
-export const requestProblemList = async () => {
-  return await axios.get(`${process.env.REACT_APP_API_ENDPOINT}/api/problem`);
-};
+const instance = axios.create({
+  baseURL: import.meta.env.VITE_APP_URL,
+});
 
-export const requestProblem = async (id: string) => {
-  return await axios.get(
-    `${process.env.REACT_APP_API_ENDPOINT}/api/problem/${id}`
-  );
+export const requestProblem = async (id: number) => {
+  return await instance.get(`/api/problem?problemId=${id}`);
 };
