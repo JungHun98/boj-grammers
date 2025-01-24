@@ -34,7 +34,6 @@ problemSocket(io);
 app.get("/api/problem", async function (req, res) {
   try {
     const problemId = Number(req.query.problemId);
-    console.log(problemId);
 
     if (!problemId || isNaN(problemId)) {
       return res.status(400).send('유효하지 않은 번호입니다.');
@@ -62,7 +61,8 @@ app.get("/api/problem", async function (req, res) {
       examples
     });
   } catch (err) {
-    res.status(500).send('Error fetching data');
+    const error = err as unknown as Error;    
+    res.status(Number(error.message)).send('Error fetching data');
   }
 });
 

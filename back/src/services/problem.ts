@@ -1,3 +1,5 @@
+import { AxiosError, isAxiosError } from "axios";
+
 const axios = require('axios');
 const cheerio = require('cheerio');
 
@@ -85,16 +87,10 @@ export const problem = async (id: Number) => {
       examples
     };
   } catch(err) {
-    console.log(err);
-  }
-
-  return {
-    id: null,
-      title: null,
-      descriptionHtml: null,
-      inputHtml: null,
-      outputHtml: null,
-      limitHtml: null,
-      examples: null
+    if (isAxiosError(err) && err.response?.status === 404) { 
+      throw Error("404");
+    } else {
+      throw Error("500");
+    }
   }
 }
