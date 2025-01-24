@@ -13,3 +13,10 @@ export const ProblemH6 = styled('h6')`
   margin-bottom: 1rem;
   color: white;
 `;
+
+export const ErrorBox = styled('div')`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #b2c0cc;
+`

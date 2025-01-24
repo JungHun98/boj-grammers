@@ -4,7 +4,7 @@ import useProblemStore from '@/store/store';
 import Example from '@/components/Example';
 import ProblemSection from '@/components/ProblemSection';
 import Spinner from '@/components/Spinner';
-import { ProblemH6, Wrapper } from './ProblemContainer.style';
+import { ErrorBox, ProblemH6, Wrapper } from './ProblemContainer.style';
 
 interface ProblemContainerProps {
   width: number;
@@ -19,7 +19,7 @@ function ProblemContainer({ width }: ProblemContainerProps) {
   const updateExampleOutput = useProblemStore(
     (state) => state.updateExampleOutput,
   );
-  const { data, error, setData } = useFetchProblem(problemNumber);
+  const { data, error, setData, setError } = useFetchProblem(problemNumber);
 
   useEffect(() => {
     if (data?.examples?.length !== undefined) {
@@ -33,10 +33,11 @@ function ProblemContainer({ width }: ProblemContainerProps) {
 
   useEffect(() => {
     setData(null);
+    setError(null);
   }, [problemNumber]);
 
   if (error) {
-    return <div>Error: {error.message}</div>;
+    return <ErrorBox style={{ width: `${width}%` }}>{error.message}</ErrorBox>;
   }
 
   return (
