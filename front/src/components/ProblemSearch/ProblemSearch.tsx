@@ -7,7 +7,8 @@ import {
 import useProblemStore from '@/store/store';
 
 function ProblemSearch() {
-  const [problemNumber, setProblemNumber] = useState(1000);
+  const [problemNumber, setProblemNumber] = useState<string>();
+
   const updateProblemNumber = useProblemStore(
     (state) => state.updateProblemNumber,
   );
@@ -17,16 +18,23 @@ function ProblemSearch() {
   const handleInputProblem: ChangeEventHandler<HTMLInputElement> = ({
     target,
   }) => {
-    setProblemNumber(Number(target.value));
+    setProblemNumber(target.value);
   };
 
-  const handleClickSearch = () => {
-    updateProblemNumber(problemNumber);
-  };
+  const handleSearch = () => {
+    const inputValue = Number(problemNumber);
+
+    if(isNaN(inputValue)) {
+      alert('문제 번호에 숫자만 입력해주세요.');
+      return;
+    }
+
+    updateProblemNumber(inputValue);
+  }
 
   const handleSubmitSearch: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
-    updateProblemNumber(problemNumber);
+    handleSearch();
   };
 
   return (
@@ -36,7 +44,7 @@ function ProblemSearch() {
           placeholder={placeholderText}
           onChange={handleInputProblem}
         />
-        <ProblemSearchButton onClick={handleClickSearch}>
+        <ProblemSearchButton type='submit'>
           <img src="/search.svg" alt="검색" width={24} />
         </ProblemSearchButton>
       </form>
