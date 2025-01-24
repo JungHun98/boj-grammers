@@ -42,17 +42,12 @@ function ExcutionResult({ height }: ExcutionResultProps) {
   useEffect(() => {
     if (socket !== null) {
       socket.on('start', (data) => {
-        if (error !== null) {
-          setError(null);
-        }
+        setError(null);
         setExcuteResult(data);
       });
 
       socket.on('output', (data) => {
-        if (error !== null) {
-          setError(null);
-        }
-
+        setError(null);
         setExcuteResult(data);
       });
 
