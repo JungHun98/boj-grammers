@@ -6,7 +6,11 @@ import {
   TestCaseArea,
   Wrapper,
 } from './AdditionalTestCaseModal.style';
-import useProblemStore from '@/store/store';
+import {
+  useExampleInput,
+  useExampleOutput,
+  useProblemActions,
+} from '@/store/store';
 
 interface AdditionalTestCaseModalProps {
   onClose: () => void;
@@ -16,14 +20,9 @@ function AdditionalTestCaseModal({ onClose }: AdditionalTestCaseModalProps) {
   const [input, setInput] = useState('');
   const [output, setOutput] = useState('');
 
-  const exampleInput = useProblemStore((state) => state.exampleInput);
-  const exampleOutput = useProblemStore((state) => state.exampleOutput);
-  const updateExampleInput = useProblemStore(
-    (state) => state.updateExampleInput,
-  );
-  const updateExampleOutput = useProblemStore(
-    (state) => state.updateExampleOutput,
-  );
+  const exampleInput = useExampleInput();
+  const exampleOutput = useExampleOutput();
+  const { updateExampleInput, updateExampleOutput } = useProblemActions();
 
   const handleEnterInput: ChangeEventHandler<HTMLTextAreaElement> = ({
     target,

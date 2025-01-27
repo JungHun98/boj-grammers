@@ -1,24 +1,19 @@
 import { useEffect } from 'react';
 import useFetchProblem from '@/hooks/useFetchProblem';
-import useProblemStore from '@/store/store';
 import Example from '@/components/Example';
 import ProblemSection from '@/components/ProblemSection';
 import Spinner from '@/components/Spinner';
 import { ErrorBox, ProblemH6, Wrapper } from './ProblemContainer.style';
+import { useProblemActions, useProblemNumber } from '@/store/store';
 
 interface ProblemContainerProps {
   width: number;
 }
 
 function ProblemContainer({ width }: ProblemContainerProps) {
-  const problemNumber = useProblemStore((state) => state.problemNumber);
+  const problemNumber = useProblemNumber();
 
-  const updateExampleInput = useProblemStore(
-    (state) => state.updateExampleInput,
-  );
-  const updateExampleOutput = useProblemStore(
-    (state) => state.updateExampleOutput,
-  );
+  const { updateExampleInput, updateExampleOutput } = useProblemActions();
   const { data, error, setData, setError } = useFetchProblem(problemNumber);
 
   useEffect(() => {

@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react';
 import { ErrorPre, Wrapper } from './ExcutionResult.styles';
 import useSocket from '@/hooks/useSocket';
-import useProblemStore from '@/store/store';
+import {
+  useProblemNumber,
+  useExampleInput,
+  useExampleOutput,
+} from '@/store/store';
 import ResultTable from '@/components/ResultTable';
 
 interface ExcutionResultProps {
@@ -19,9 +23,9 @@ function ExcutionResult({ height }: ExcutionResultProps) {
   const [error, setError] = useState<string | null>(null);
   const [excuteResult, setExcuteResult] = useState<string | null[]>([null]);
 
-  const problemNuber = useProblemStore((state) => state.problemNumber);
-  const exampleInput = useProblemStore((state) => state.exampleInput);
-  const exampleOutput = useProblemStore((state) => state.exampleOutput);
+  const problemNuber = useProblemNumber();
+  const exampleInput = useExampleInput();
+  const exampleOutput = useExampleOutput();
 
   const makeRsultTable = () => {
     const resultArray: ResultInfo[] = Array(excuteResult.length);

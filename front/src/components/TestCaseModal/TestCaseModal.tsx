@@ -8,7 +8,11 @@ import {
   CancleIcon,
   Flex,
 } from './TestCaseModal.style';
-import useProblemStore from '@/store/store';
+import {
+  useExampleInput,
+  useExampleOutput,
+  useProblemActions,
+} from '@/store/store';
 
 interface TestCaseModalProps {
   onClose: () => void;
@@ -16,14 +20,9 @@ interface TestCaseModalProps {
 }
 
 function TestCaseModal({ onClose, onOpen }: TestCaseModalProps) {
-  const exampleInput = useProblemStore((state) => state.exampleInput);
-  const exampleOutput = useProblemStore((state) => state.exampleOutput);
-  const updateExampleInput = useProblemStore(
-    (state) => state.updateExampleInput,
-  );
-  const updateExampleOutput = useProblemStore(
-    (state) => state.updateExampleOutput,
-  );
+  const exampleInput = useExampleInput();
+  const exampleOutput = useExampleOutput();
+  const { updateExampleInput, updateExampleOutput } = useProblemActions();
 
   const exampleLengthArr = Array.from(
     { length: exampleInput.length },
