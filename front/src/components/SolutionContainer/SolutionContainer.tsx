@@ -1,5 +1,5 @@
 import { DragEventHandler, useState } from 'react';
-import { RunSection, Wrapper } from './SolutionContainer.styles';
+import { Gutter, RunSection, Wrapper } from './SolutionContainer.styles';
 import CodeSpace from '@/components/CodeSpace';
 import ExcutionResult from '@/components/ExcutionResult';
 
@@ -22,11 +22,7 @@ function SolutionContainer({ width }: SolutionContainerProps) {
     <Wrapper style={{ width: `${100 - width}%` }}>
       <RunSection>
         <CodeSpace height={upHeigth} />
-        <div
-          className="gutter_vertical"
-          draggable="true"
-          onDrag={handleVirticalDrag}
-        ></div>
+        <Gutter draggable="true" onDrag={handleVirticalDrag}></Gutter>
         <ExcutionResult height={upHeigth} />
       </RunSection>
     </Wrapper>

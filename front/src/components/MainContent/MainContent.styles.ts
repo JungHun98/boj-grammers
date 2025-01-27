@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 export const Wrapper = styled('main')`
   display: flex;
-  height: calc(100vh - (3.5rem+3.5625rem));
+  height: calc(100vh - (3.5rem + 3.5625rem));
 `;
 
 export const Gutter = styled('div')`
