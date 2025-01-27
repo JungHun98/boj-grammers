@@ -67,7 +67,7 @@ function ExcutionResult({ height }: ExcutionResultProps) {
   }, [problemNuber]);
 
   return (
-    <Wrapper style={{ height: `${100 - height}%` }}>
+    <Wrapper style={{ height: `calc(${100 - height}% - 15px)` }}>
       {error === null && excuteResult.length === 0 ? (
         <h3>여기에 실행 결과가 표시됩니다.</h3>
       ) : error !== null ? (
