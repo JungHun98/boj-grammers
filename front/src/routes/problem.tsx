@@ -1,5 +1,4 @@
-import { useState, useEffect, DragEventHandler } from 'react';
-import { useBlocker, useNavigate } from 'react-router-dom';
+import { useState, DragEventHandler } from 'react';
 import styled from '@emotion/styled';
 
 import ProblemSearch from '@/components/ProblemSearch';
@@ -14,9 +13,6 @@ interface ProblemProps {
 }
 
 const Problem = ({ onOpen }: ProblemProps) => {
-  const navigate = useNavigate();
-  const blocker = useBlocker(true);
-
   const [leftWidth, setLeftWidth] = useState(40);
   const [upHeigth, setUpHeigth] = useState(60);
 
@@ -35,19 +31,6 @@ const Problem = ({ onOpen }: ProblemProps) => {
       setUpHeigth(newUpHegith);
     }
   };
-
-  useEffect(() => {
-    if (blocker.state === 'blocked') {
-      const isTrue = window.confirm('변경사항이 저장되지 않을 수 있습니다.');
-
-      if (isTrue) {
-        blocker.proceed();
-        navigate('/');
-      } else {
-        blocker.reset();
-      }
-    }
-  }, [blocker, navigate]);
 
   return (
     <div className="wrapper">
