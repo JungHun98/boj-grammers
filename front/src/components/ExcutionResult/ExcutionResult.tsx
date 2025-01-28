@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ErrorPre, Wrapper } from './ExcutionResult.styles';
 import useSocket from '@/hooks/useSocket';
-import {
-  useProblemNumber,
-  useExampleInput,
-  useExampleOutput,
-} from '@/store/store';
+import { useExampleInput, useExampleOutput } from '@/store/store';
 import ResultTable from '@/components/ResultTable';
 
 interface ExcutionResultProps {
@@ -21,9 +17,8 @@ interface ResultInfo {
 function ExcutionResult({ height }: ExcutionResultProps) {
   const socket = useSocket('http://localhost:8080');
   const [error, setError] = useState<string | null>(null);
-  const [excuteResult, setExcuteResult] = useState<string | null[]>([null]);
+  const [excuteResult, setExcuteResult] = useState<string | null[]>([]);
 
-  const problemNuber = useProblemNumber();
   const exampleInput = useExampleInput();
   const exampleOutput = useExampleOutput();
 
@@ -61,10 +56,6 @@ function ExcutionResult({ height }: ExcutionResultProps) {
       });
     }
   }, [socket]);
-
-  useEffect(() => {
-    setExcuteResult([]);
-  }, [problemNuber]);
 
   return (
     <Wrapper style={{ height: `calc(${100 - height}% - 15px)` }}>

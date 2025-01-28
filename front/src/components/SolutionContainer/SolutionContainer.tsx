@@ -5,9 +5,10 @@ import ExcutionResult from '@/components/ExcutionResult';
 
 interface SolutionContainerProps {
   width: number;
+  problemNumber: number;
 }
 
-function SolutionContainer({ width }: SolutionContainerProps) {
+function SolutionContainer({ width, problemNumber }: SolutionContainerProps) {
   const [upHeigth, setUpHeigth] = useState(60);
 
   const handleVirticalDrag: DragEventHandler = (e) => {
@@ -23,7 +24,7 @@ function SolutionContainer({ width }: SolutionContainerProps) {
       <RunSection>
         <CodeSpace height={upHeigth} />
         <Gutter draggable="true" onDrag={handleVirticalDrag}></Gutter>
-        <ExcutionResult height={upHeigth} />
+        <ExcutionResult key={problemNumber} height={upHeigth} />
       </RunSection>
     </Wrapper>
   );

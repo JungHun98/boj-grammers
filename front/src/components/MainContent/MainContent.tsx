@@ -2,9 +2,11 @@ import { DragEventHandler, useState } from 'react';
 import ProblemContainer from '@/components/ProblemContainer';
 import SolutionContainer from '@/components/SolutionContainer';
 import { Gutter, Wrapper } from './MainContent.styles';
+import { useProblemNumber } from '@/store/store';
 
 function MainContent() {
   const [leftWidth, setLeftWidth] = useState(40);
+  const problemNumber = useProblemNumber();
 
   const handleDrag: DragEventHandler = (e) => {
     const newLeftWidth = (e.clientX / window.innerWidth) * 100;
@@ -16,9 +18,13 @@ function MainContent() {
 
   return (
     <Wrapper>
-      <ProblemContainer width={leftWidth} />
+      <ProblemContainer
+        key={problemNumber}
+        width={leftWidth}
+        problemNumber={problemNumber}
+      />
       <Gutter draggable="true" onDrag={handleDrag} />
-      <SolutionContainer width={leftWidth} />
+      <SolutionContainer width={leftWidth} problemNumber={problemNumber} />
     </Wrapper>
   );
 }

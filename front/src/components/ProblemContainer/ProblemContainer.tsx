@@ -4,17 +4,16 @@ import Example from '@/components/Example';
 import ProblemSection from '@/components/ProblemSection';
 import Spinner from '@/components/Spinner';
 import { ErrorBox, ProblemH6, Wrapper } from './ProblemContainer.style';
-import { useProblemActions, useProblemNumber } from '@/store/store';
+import { useProblemActions } from '@/store/store';
 
 interface ProblemContainerProps {
   width: number;
+  problemNumber: number;
 }
 
-function ProblemContainer({ width }: ProblemContainerProps) {
-  const problemNumber = useProblemNumber();
-
+function ProblemContainer({ width, problemNumber }: ProblemContainerProps) {
   const { updateExampleInput, updateExampleOutput } = useProblemActions();
-  const { data, error, setData, setError } = useFetchProblem(problemNumber);
+  const { data, error } = useFetchProblem(problemNumber);
 
   useEffect(() => {
     if (data?.examples?.length !== undefined) {
@@ -25,11 +24,6 @@ function ProblemContainer({ width }: ProblemContainerProps) {
       updateExampleOutput(exampleOutput);
     }
   }, [data, updateExampleInput, updateExampleOutput]);
-
-  useEffect(() => {
-    setData(null);
-    setError(null);
-  }, [problemNumber]);
 
   if (error) {
     return <ErrorBox style={{ width: `${width}%` }}>{error.message}</ErrorBox>;
