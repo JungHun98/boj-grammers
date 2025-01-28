@@ -1,10 +1,10 @@
 import './Main.css';
-import Problem from './routes/problem';
-import Modal from '@/components/common/Modal/Modal';
 import { useState } from 'react';
+import Problem from './routes/problem';
+import Modal from '@/components/common/Modal';
 import TestCaseModal from '@/components/TestCaseModal';
+import AdditionalModal from '@/components/common/AdditionalModal';
 import AdditionalTestCaseModal from '@/components/AdditionalTestCaseModal';
-import AdditionalModal from '@/components/common/AdditionalModal/AdditionalModal';
 
 function App() {
   const [isOpen, setIsOpen] = useState(false);
