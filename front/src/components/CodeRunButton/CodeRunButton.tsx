@@ -4,7 +4,7 @@ import { useLanguage, useCode } from '@/store/codeStroe';
 import { useExampleInput } from '@/store/store';
 
 function CodeRunButton() {
-  const socket = useSocket('http://localhost:8080');
+  const socket = useSocket(import.meta.env.VITE_APP_URL);
 
   const lang = useLanguage();
   const code = useCode();

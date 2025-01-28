@@ -15,7 +15,7 @@ interface ResultInfo {
 }
 
 function ExcutionResult({ height }: ExcutionResultProps) {
-  const socket = useSocket('http://localhost:8080');
+  const socket = useSocket(import.meta.env.VITE_APP_URL);
   const [error, setError] = useState<string | null>(null);
   const [excuteResult, setExcuteResult] = useState<string | null[]>([]);
 
