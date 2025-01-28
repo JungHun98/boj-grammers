@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { defaultCode } from '@/utils/consts';
 
-type Language = 'cpp' | 'python' | 'java' | 'javascript';
+export type Language = keyof typeof defaultCode;
 
 type codeSet = {
   [key in Language]: string;
@@ -30,4 +30,12 @@ const useCodeStore = create<State & Action>((set) => ({
     })),
 }));
 
-export default useCodeStore;
+export const useLanguage = () => useCodeStore((state) => state.language);
+
+export const useCode = () =>
+  useCodeStore((state) => state.code[state.language]);
+
+export const useUpdateLanguage = () =>
+  useCodeStore((state) => state.updateLanguage);
+
+export const useUpdateCode = () => useCodeStore((state) => state.updateCode);

@@ -1,14 +1,13 @@
 import { Button } from '@/components/common/Button';
 import useSocket from '@/hooks/useSocket';
-import useCodeStore from '@/store/codeStroe';
+import { useLanguage, useCode } from '@/store/codeStroe';
 import { useExampleInput } from '@/store/store';
-import { memo } from 'react';
 
 function CodeRunButton() {
   const socket = useSocket('http://localhost:8080');
 
-  const lang = useCodeStore((state) => state.language);
-  const code = useCodeStore((state) => state.code)[lang];
+  const lang = useLanguage();
+  const code = useCode();
   const input = useExampleInput();
 
   const handleClickButton = () => {
@@ -18,4 +17,4 @@ function CodeRunButton() {
   return <Button onClick={handleClickButton}>코드 실행</Button>;
 }
 
-export default memo(CodeRunButton);
+export default CodeRunButton;

@@ -2,16 +2,16 @@ import CodeMirror from '@uiw/react-codemirror';
 import { copilot } from '@uiw/codemirror-theme-copilot';
 import { loadLanguage } from '@uiw/codemirror-extensions-langs';
 import { Wrapper } from './CodeSpace.style';
-import useCodeStore from '@/store/codeStroe';
+import { useLanguage, useCode, useUpdateCode } from '@/store/codeStroe';
 
 interface CodeSpaceProps {
   height: number;
 }
 
 function CodeSpace({ height }: CodeSpaceProps) {
-  const lang = useCodeStore((state) => state.language);
-  const codeSet = useCodeStore((state) => state.code);
-  const updateCode = useCodeStore((state) => state.updateCode);
+  const lang = useLanguage();
+  const codeSet = useCode();
+  const updateCode = useUpdateCode();
 
   const handleInputCode = (value: string) => {
     updateCode(lang, value);
@@ -20,7 +20,7 @@ function CodeSpace({ height }: CodeSpaceProps) {
   return (
     <Wrapper height={height}>
       <CodeMirror
-        value={codeSet[lang]}
+        value={codeSet}
         onChange={handleInputCode}
         theme={copilot}
         height="100%"

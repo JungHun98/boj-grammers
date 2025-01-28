@@ -1,10 +1,8 @@
-import useCodeStore from '@/store/codeStroe';
 import { Wrapper } from './LangSelect.style';
-
-type Language = 'cpp' | 'python' | 'java' | 'javascript';
+import { useUpdateLanguage, Language } from '@/store/codeStroe';
 
 function LangSelect() {
-  const updateLang = useCodeStore((state) => state.updateLanguage);
+  const updateLang = useUpdateLanguage();
 
   return (
     <Wrapper>
