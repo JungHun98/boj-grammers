@@ -1,20 +1,34 @@
 import { Button } from '@/components/common/Button';
 import CodeRunButton from '@/components/CodeRunButton';
-import { Wrapper } from './ButtonSection.styles';
+import { ButtonContainer, Wrapper } from './ButtonSection.styles';
+import { useProblemNumber } from '@/store/store';
+import { useLanguage } from '@/store/codeStroe';
 
 interface ButtonSectionProps {
   onOpen: () => void;
 }
 
 function ButtonSection({ onOpen }: ButtonSectionProps) {
+  const problemNumber = useProblemNumber();
+  const language = useLanguage();
+
+  const openNewTap = (url: string) => {
+    window.open(url);
+  };
+
+  const googleSearchURL = `https://www.google.com/search?q=백준+${problemNumber}+${language}`;
+  const BojSubmithURL = `https://www.acmicpc.net/submit/${problemNumber}`;
+
   return (
     <Wrapper>
-      <div>
+      <ButtonContainer>
         <Button onClick={onOpen}>테스트 케이스 추가하기</Button>
-      </div>
-      <div>
+        <Button onClick={() => openNewTap(googleSearchURL)}>문제 검색</Button>
+      </ButtonContainer>
+      <ButtonContainer>
         <CodeRunButton />
-      </div>
+        <Button onClick={() => openNewTap(BojSubmithURL)}>제출하기</Button>
+      </ButtonContainer>
     </Wrapper>
   );
 }

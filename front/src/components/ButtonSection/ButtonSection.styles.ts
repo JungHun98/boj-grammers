@@ -10,3 +10,9 @@ export const Wrapper = styled('div')`
   box-sizing: border-box;
   border-top: 1px solid #414547;
 `;
+
+export const ButtonContainer = styled('div')`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
