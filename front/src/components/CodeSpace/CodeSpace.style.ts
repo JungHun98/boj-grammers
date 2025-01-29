@@ -13,6 +13,6 @@ export const Wrapper = styled('div')<{ height: number }>`
   }
 
   & .cm-theme * {
-    background-color: #1e1e1e;
+    background-color: transparent;
   }
 `;
