@@ -10,7 +10,7 @@ import { dockerBuild } from "./helper/docker-build";
 
 const app: Application = express();
 const server = http.createServer(app);
-const port: number = 8080;
+const port: number = 80;
 
 app.use(
   cors({
