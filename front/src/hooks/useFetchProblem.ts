@@ -31,13 +31,17 @@ function useFetchProblem(pId: number): {
         const response = await requestProblem(pId);
         setData(response.data);
       } catch (err: unknown) {
+        let error = err as Error;
+
         if (err instanceof AxiosError) {
           if (err.response?.status === 404) {
-            setError(new Error('존재하지 않는 문제 번호입니다.'));
+            error = new Error('존재하지 않는 문제 번호입니다.');
           } else {
-            setError(new Error('서버에 문제가 발생했습니다.'));
+            error = new Error('서버에 문제가 발생했습니다.');
           }
         }
+
+        setError(error);
       }
     }
 

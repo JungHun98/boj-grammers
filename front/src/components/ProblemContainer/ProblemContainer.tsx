@@ -23,7 +23,7 @@ function ProblemContainer({ width, problemNumber }: ProblemContainerProps) {
       updateExampleInput(exampleInput);
       updateExampleOutput(exampleOutput);
     }
-  }, [data, updateExampleInput, updateExampleOutput]);
+  }, [data]);
 
   if (error) {
     return <ErrorBox style={{ width: `${width}%` }}>{error.message}</ErrorBox>;

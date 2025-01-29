@@ -33,7 +33,7 @@ export const problemSocket = (io: Server) => {
     });
 
     socket.on("disconnect", () => {
-      execSync(`docker exec test-app sh -c "rm -rf /usr/src/${socket.id}`);
+      execSync(`docker exec test-app sh -c "rm -rf /usr/src/${socket.id}"`);
       fs.rmdirSync(`compile/${socket.id}`);
       console.log("disconnect");
     });
