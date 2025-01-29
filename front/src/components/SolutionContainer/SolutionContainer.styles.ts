@@ -13,7 +13,7 @@ export const RunSection = styled('div')`
 
 export const Gutter = styled('div')`
   height: 15px;
-  background-image: url('/public/gutter_ver.png');
+  background-image: url('/gutter_ver.png');
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;

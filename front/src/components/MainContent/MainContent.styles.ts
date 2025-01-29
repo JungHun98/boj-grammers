@@ -9,7 +9,7 @@ export const Wrapper = styled('main')`
 
 export const Gutter = styled('div')`
   width: 15px;
-  background-image: url('/public/gutter.png');
+  background-image: url('/gutter.png');
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
