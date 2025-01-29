@@ -3,6 +3,7 @@ import { copilot } from '@uiw/codemirror-theme-copilot';
 import { loadLanguage } from '@uiw/codemirror-extensions-langs';
 import { Wrapper } from './CodeSpace.style';
 import { useLanguage, useCode, useUpdateCode } from '@/store/codeStroe';
+import CopyBlock from '@/components/CopyBlock';
 
 interface CodeSpaceProps {
   height: number;
@@ -19,6 +20,7 @@ function CodeSpace({ height }: CodeSpaceProps) {
 
   return (
     <Wrapper height={height}>
+      <CopyBlock code={codeSet} />
       <CodeMirror
         value={codeSet}
         onChange={handleInputCode}
