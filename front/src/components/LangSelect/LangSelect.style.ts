@@ -1,7 +1,6 @@
 import styled from '@emotion/styled';
 
 export const Wrapper = styled('div')`
-  border-bottom: 1px solid #414547;
   display: flex;
   align-items: center;
   justify-content: right;
@@ -9,12 +8,12 @@ export const Wrapper = styled('div')`
   & select {
     cursor: pointer;
     font-size: 15px;
-    background-color: #474b4d;
-    border-radius: 6px;
-    color: #fff;
-    border: 0;
     font-family: 'Pretendard-Regular';
-    padding: 8px 15px;
     outline: none;
+    padding: 6px 12px;
+    border: 1px solid #404040;
+    border-radius: 4px;
+    background: #363636;
+    color: #e0e0e0;
   }
 `;

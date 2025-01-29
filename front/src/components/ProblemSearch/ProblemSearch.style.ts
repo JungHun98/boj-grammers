@@ -4,18 +4,19 @@ export const ProblemNumberInput = styled('input')`
   padding: 0px 1.5rem 0px 1.0625rem;
   width: 15rem;
   height: 1.7rem;
-  background-color: #151f29;
-  border: 0.05rem solid #d5d5d5;
-  border-radius: 0.25rem;
   appearance: none;
-  color: white;
   caret-color: white;
+
+  border: 1px solid #404040;
+  border-radius: 4px;
+  background: #363636;
+  color: #e0e0e0;
 
   &:hover,
   &:focus-within {
     outline: none;
-    border: 0.05rem solid rgb(0, 120, 255);
-    box-shadow: rgb(0, 120, 255) 0px 0;
+    border: 0.05rem solid white;
+    box-shadow: white 0px 0;
   }
 `;
 

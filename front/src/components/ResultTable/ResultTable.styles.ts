@@ -5,7 +5,7 @@ export const Table = styled('table')`
   margin-bottom: 12px;
   & tbody {
     width: 100%;
-    background-color: #232a2f;
+    background-color: #2d2d2d;
     margin-bottom: 15px;
     font-size: 14px;
     border: 1px solid #414547;
@@ -24,10 +24,17 @@ export const Table = styled('table')`
   }
 `;
 
+export const TablePre = styled('pre')`
+  margin: 0;
+  background-color: #2d2d2d;
+`;
+
 export const Success = styled('span')`
   color: blue;
-`
+`;
 
 export const Fail = styled('pre')`
+  margin: 0;
+  background-color: #2d2d2d;
   color: red;
-`
+`;

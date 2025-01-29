@@ -1,3 +1,4 @@
+import { css } from '@emotion/css';
 import styled from '@emotion/styled';
 
 export const Wrapper = styled('div')`
@@ -9,6 +10,26 @@ export const Wrapper = styled('div')`
   padding: 0px 20px;
   box-sizing: border-box;
   border-top: 1px solid #414547;
+  background-color: #1e1e1e;
+`;
+
+export const seconderyStyle = css`
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  border: 1px solid #404040;
+
+  &: hover {
+    background-color: #383838;
+  }
+`;
+
+export const primaryStyle = css`
+  background-color: #2b5b84;
+  color: white;
+
+  &:hover {
+    background-color: #1e4a73;
+  }
 `;
 
 export const ButtonContainer = styled('div')`

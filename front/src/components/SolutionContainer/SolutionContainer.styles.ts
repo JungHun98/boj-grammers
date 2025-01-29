@@ -18,7 +18,7 @@ export const Gutter = styled('div')`
   background-position: center;
   background-size: contain;
   cursor: n-resize;
-  background-color: #182025;
+  background-color: #1e1e1e;
   border: solid 1px #414547;
   border-bottom: none;
 `;
