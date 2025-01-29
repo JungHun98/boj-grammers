@@ -1,4 +1,4 @@
-import express, { Application, response } from "express";
+import express, { Application } from "express";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
@@ -6,6 +6,7 @@ import path from "path";
 
 import { problem } from "./services/problem";
 import { problemSocket } from "./services/problem-socket";
+import { dockerBuild } from "./helper/docker-build";
 
 const app: Application = express();
 const server = http.createServer(app);
@@ -71,3 +72,5 @@ app.use(express.static(path.join(__dirname, "../../front/build")));
 server.listen(port, function () {
   console.log(`App is listening on port ${port} !`);
 });
+
+dockerBuild();
