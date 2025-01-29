@@ -36,7 +36,7 @@ app.get("/api/problem", async function (req, res) {
     const problemId = Number(req.query.problemId);
 
     if (!problemId || isNaN(problemId)) {
-      return res.status(400).send('유효하지 않은 번호입니다.');
+      return res.status(400).send("유효하지 않은 번호입니다.");
     }
 
     // problemId를 problem 함수에 전달하여 데이터 가져오기
@@ -47,7 +47,7 @@ app.get("/api/problem", async function (req, res) {
       inputHtml,
       outputHtml,
       limitHtml,
-      examples
+      examples,
     } = await problem(problemId);
 
     // 데이터를 JSON 형식으로 응답
@@ -58,19 +58,15 @@ app.get("/api/problem", async function (req, res) {
       inputHtml,
       outputHtml,
       limitHtml,
-      examples
+      examples,
     });
   } catch (err) {
-    const error = err as unknown as Error;    
-    res.status(Number(error.message)).send('Error fetching data');
+    const error = err as unknown as Error;
+    res.status(Number(error.message)).send("Error fetching data");
   }
 });
 
 app.use(express.static(path.join(__dirname, "../../front/build")));
-
-// app.get("*", function (req, res) {
-//   res.sendFile(path.join(__dirname, "../../front/build/index.html"));
-// });
 
 server.listen(port, function () {
   console.log(`App is listening on port ${port} !`);
