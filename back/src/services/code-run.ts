@@ -7,8 +7,13 @@ import { execSync } from "child_process";
 import { fileName, filePath } from "../consts";
 import { Server } from "socket.io";
 
-const executeCommand = (param: string, compileCommand: string | null, runCommand: string, callback: (err: string, res: any) => void) => {
-  const formattedParam = param.split('\n').join('\\n');
+const executeCommand = (
+  param: string,
+  compileCommand: string | null,
+  runCommand: string,
+  callback: (err: string, res: any) => void
+) => {
+  const formattedParam = param.split("\n").join("\\n");
 
   if (compileCommand !== null) {
     execSync(`docker exec test-app sh -c "${compileCommand}"`);
@@ -17,7 +22,7 @@ const executeCommand = (param: string, compileCommand: string | null, runCommand
   const command = `docker exec test-app sh -c "echo -e '${formattedParam}' | ${runCommand}"`;
 
   dockerRun(command, callback);
-}
+};
 
 export const codeRun = (socket: any, data: TestData, io: Server) => {
   const { code, lang, input } = data;
@@ -36,44 +41,44 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
   }
 
   const languageCommands = {
-    "javascript": {
+    javascript: {
       compile: null,
-      run: `node ${dockerPath}/code.js`
+      run: `node ${dockerPath}/code.js`,
     },
-    "python": {
+    python: {
       compile: null,
-      run: `python3 ${dockerPath}/code.py`
+      run: `python3 ${dockerPath}/code.py`,
     },
-    "java": {
+    java: {
       compile: `javac ${dockerPath}/Main.java`,
-      run: `java ${dockerPath}/Main.java`
+      run: `java ${dockerPath}/Main.java`,
     },
-    "cpp": {
-      compile: `g++ -o ${dockerPath}/main ${dockerPath}/main.cpp`,
-      run: `${dockerPath}/main.cpp`
-    }
+    cpp: {
+      compile: `g++ ${dockerPath}/main.cpp -o ${dockerPath}/main`,
+      run: `${dockerPath}/main`,
+    },
   };
 
   io.to(socket.id).emit("start", clientResult);
 
   input.forEach((test, i) => {
     const { compile, run } = languageCommands[lang] || {};
-    
+
     if (!run) return;
-  
+
     try {
       executeCommand(test, compile, run, (err: string, res: any) => {
         if (err) {
           io.to(socket.id).emit("error", err);
           return;
         }
-        
+
         const result = typeof res === "object" ? JSON.parse(res) : res;
         clientResult[i] = result;
-        
+
         io.to(socket.id).emit("output", clientResult);
       });
-    } catch(err: any) {
+    } catch (err: any) {
       io.to(socket.id).emit("error", err.message);
     }
   });
