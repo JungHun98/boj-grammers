@@ -26,6 +26,7 @@ const io = new Server(server, {
   transports: ["websocket", "polling"],
   cors: {
     origin: "https://boj-grammers.vercel.app",
+    credentials: true,
     methods: ["GET", "POST"],
   },
 });
