@@ -11,6 +11,7 @@ const executeCommand = (
   param: string,
   compileCommand: string | null,
   runCommand: string,
+  socketId: string,
   callback: (err: string, res: any) => void
 ) => {
   const formattedParam = param.split("\n").join("\\n");
@@ -21,7 +22,7 @@ const executeCommand = (
 
   const command = `docker exec test-app sh -c "echo -e '${formattedParam}' | ${runCommand}"`;
 
-  dockerRun(command, callback);
+  dockerRun(command, socketId, callback);
 };
 
 export const codeRun = (socket: any, data: TestData, io: Server) => {
@@ -67,8 +68,9 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
     if (!run) return;
 
     try {
-      executeCommand(test, compile, run, (err: string, res: any) => {
+      executeCommand(test, compile, run, socket.id, (err: string, res: any) => {
         if (err) {
+          console.log(err);
           io.to(socket.id).emit("error", err);
           return;
         }
