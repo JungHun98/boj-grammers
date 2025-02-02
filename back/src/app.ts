@@ -14,7 +14,7 @@ const port: number = 80;
 
 app.use(
   cors({
-    origin: "*",
+    origin: "https://boj-grammers.vercel.app",
     credentials: true,
     optionsSuccessStatus: 200,
   })
@@ -25,7 +25,8 @@ app.use(express.urlencoded({ extended: false }));
 const io = new Server(server, {
   transports: ["websocket", "polling"],
   cors: {
-    origin: "*",
+    origin: "https://boj-grammers.vercel.app",
+    credentials: true,
     methods: ["GET", "POST"],
   },
 });
