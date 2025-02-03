@@ -60,6 +60,8 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
     console.error("에러");
     io.to(socket.id).emit("error", error.message);
     return;
+  } finally {
+    cleanDirectory(`${filePath}/${socket.id}`);
   }
 
   input.forEach((test, i) => {
@@ -80,6 +82,8 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
       });
     } catch (err: any) {
       io.to(socket.id).emit("error", err.message);
+    } finally {
+      cleanDirectory(`${filePath}/${socket.id}`);
     }
   });
 
