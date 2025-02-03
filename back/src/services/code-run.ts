@@ -80,7 +80,6 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
         io.to(socket.id).emit("output", clientResult);
       });
     } catch (err: any) {
-      cleanDirectory(`${filePath}/${socket.id}`);
       io.to(socket.id).emit("error", err.message);
     }
   });
