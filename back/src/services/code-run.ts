@@ -58,10 +58,9 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
   } catch (err) {
     const error = err as Error;
     console.error("에러");
+    cleanDirectory(`${filePath}/${socket.id}`);
     io.to(socket.id).emit("error", error.message);
     return;
-  } finally {
-    cleanDirectory(`${filePath}/${socket.id}`);
   }
 
   input.forEach((test, i) => {
@@ -81,9 +80,8 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
         io.to(socket.id).emit("output", clientResult);
       });
     } catch (err: any) {
-      io.to(socket.id).emit("error", err.message);
-    } finally {
       cleanDirectory(`${filePath}/${socket.id}`);
+      io.to(socket.id).emit("error", err.message);
     }
   });
 
