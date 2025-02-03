@@ -9,17 +9,11 @@ import { Server } from "socket.io";
 
 const executeCommand = (
   param: string,
-  compileCommand: string | null,
   runCommand: string,
   socketId: string,
   callback: (err: string, res: any) => void
 ) => {
   const formattedParam = param.split("\n").join("\\n");
-
-  if (compileCommand !== null) {
-    execSync(`docker exec test-app sh -c "${compileCommand}"`);
-  }
-
   const command = `docker exec test-app sh -c "echo -e '${formattedParam}' | ${runCommand}"`;
 
   dockerRun(command, socketId, callback);
@@ -32,14 +26,6 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
   const dockerPath = `/usr/src/${socket.id}`;
 
   fs.writeFileSync(`${filePath}/${socket.id}/${fileName[lang]}`, code);
-
-  try {
-    execSync(`docker cp ${filePath}/${socket.id} test-app:/usr/src`);
-  } catch (err) {
-    console.error("에러");
-    io.to(socket.id).emit("error", "compile");
-    return;
-  }
 
   const languageCommands = {
     javascript: {
@@ -62,13 +48,25 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
 
   io.to(socket.id).emit("start", clientResult);
 
-  input.forEach((test, i) => {
-    const { compile, run } = languageCommands[lang] || {};
+  const { compile, run } = languageCommands[lang] || {};
 
+  try {
+    execSync(`docker cp ${filePath}/${socket.id} test-app:/usr/src`);
+    if (compile !== null) {
+      execSync(`docker exec test-app sh -c "${compile}"`);
+    }
+  } catch (err) {
+    const error = err as Error;
+    console.error("에러");
+    io.to(socket.id).emit("error", error.message);
+    return;
+  }
+
+  input.forEach((test, i) => {
     if (!run) return;
 
     try {
-      executeCommand(test, compile, run, socket.id, (err: string, res: any) => {
+      executeCommand(test, run, socket.id, (err: string, res: any) => {
         if (err) {
           console.log(err);
           io.to(socket.id).emit("error", err);
