@@ -6,6 +6,7 @@ const cheerio = require("cheerio");
 interface Problem {
   id: number;
   title: string;
+  limitTableHtml: string;
   descriptionHtml: string;
   inputHtml: string;
   outputHtml: string;
@@ -31,6 +32,7 @@ export const problem = async (id: Number) => {
     const inputHtml = $("div#problem_input").html()!.trim();
     const outputHtml = $("div#problem_output").html()!.trim();
     const limitHtml = $("div#problem_limit").html()?.trim() || null;
+    const limitTableHtml = $(".table-responsive").html()!.trim();
 
     let descriptionHtml = $("div#problem_description").html()!.trim();
 
@@ -82,6 +84,7 @@ export const problem = async (id: Number) => {
     return {
       id,
       title,
+      limitTableHtml,
       descriptionHtml,
       inputHtml,
       outputHtml,

@@ -45,6 +45,7 @@ app.get("/api/problem", async function (req, res) {
     const {
       id,
       title,
+      limitTableHtml,
       descriptionHtml,
       inputHtml,
       outputHtml,
@@ -56,6 +57,7 @@ app.get("/api/problem", async function (req, res) {
     res.json({
       id,
       title,
+      limitTableHtml,
       descriptionHtml,
       inputHtml,
       outputHtml,
