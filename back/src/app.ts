@@ -34,6 +34,14 @@ const io = new Server(server, {
 problemSocket(io);
 
 app.get("/api/problem", async function (req, res) {
+  const userAgent = req.headers["user-agent"];
+
+  if (userAgent && userAgent.includes("Postman")) {
+    return res
+      .status(403)
+      .json({ message: "Access denied for Postman requests." });
+  }
+
   try {
     const problemId = Number(req.query.problemId);
 
