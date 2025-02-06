@@ -75,11 +75,13 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
       "warning",
       "리눅스 명령어는 코드에 작성할 수 없어요."
     );
+    cleanDirectory(`${filePath}/${socket.id}`);
     return;
   }
 
   if (networkConnectionRegex.test(code)) {
     io.to(socket.id).emit("warning", "네트워크 연결 코드는 작성할 수 없어요.");
+    cleanDirectory(`${filePath}/${socket.id}`);
     return;
   }
 
