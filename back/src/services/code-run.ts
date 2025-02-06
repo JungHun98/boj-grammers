@@ -19,10 +19,12 @@ const executeCommand = (
   dockerRun(command, socketId, callback);
 };
 
-const directoryCommandsRegex = /(?<!\w)\b(cd|ls|mkdir|rmdir|rm|cp|mv)\b(?!\w)/;
+const directoryCommandsRegex =
+  /(?<!\w)\b(cd|ls|mkdir|rmdir|rm|cp|mv|sudo)\b(?!\w)/;
 
 export const codeRun = (socket: any, data: TestData, io: Server) => {
   const { code, lang, input } = data;
+  console.log(code);
 
   const clientResult: string[] = Array(input.length).fill(null);
   const dockerPath = `/usr/src/${socket.id}`;
