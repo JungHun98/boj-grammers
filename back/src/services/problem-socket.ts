@@ -20,7 +20,7 @@ export interface TestData {
   input: string[];
 }
 
-const LIMIT_CPU_USAGE = 10;
+const LIMIT_CPU_USAGE = 75;
 
 const getCpuUsage = () => {
   const cpus = os.cpus();
