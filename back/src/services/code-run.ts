@@ -67,8 +67,8 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
 
   if (directoryCommandsRegex.test(code)) {
     io.to(socket.id).emit(
-      "error",
-      "\n리눅스 명령어는 코드에 작성할 수 없습니다."
+      "warning",
+      "리눅스 명령어는 코드에 작성할 수 없어요."
     );
     return;
   }

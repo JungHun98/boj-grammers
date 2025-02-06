@@ -1,6 +1,6 @@
 import { Server } from "socket.io";
 import fs from "fs";
-
+import os from "os";
 import { codeRun } from "./code-run";
 import { execSync } from "child_process";
 import { filePath } from "../consts";
@@ -20,6 +20,26 @@ export interface TestData {
   input: string[];
 }
 
+const LIMIT_CPU_USAGE = 10;
+
+const getCpuUsage = () => {
+  const cpus = os.cpus();
+  let totalIdle = 0;
+  let totalTick = 0;
+
+  for (let cpu of cpus) {
+    for (let time of Object.values(cpu.times)) {
+      totalTick += time;
+    }
+    totalIdle += cpu.times.idle;
+  }
+
+  const usedCpu = totalTick - totalIdle;
+  const cpuUsagePercentage = (usedCpu / totalTick) * 100;
+
+  return cpuUsagePercentage;
+};
+
 export const problemSocket = (io: Server) => {
   const problem = io.of("/");
 
@@ -29,6 +49,16 @@ export const problemSocket = (io: Server) => {
     fs.mkdirSync(`${filePath}/${socket.id}`);
 
     socket.on("codeRun", async (data: TestData) => {
+      const cpuUsage = getCpuUsage();
+
+      if (cpuUsage > LIMIT_CPU_USAGE) {
+        io.to(socket.id).emit(
+          "warning",
+          "서버가 혼잡해요. 잠시만 기다려주세요."
+        );
+        return;
+      }
+
       codeRun(socket, data, io);
     });
 
