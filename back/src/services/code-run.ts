@@ -24,14 +24,6 @@ const directoryCommandsRegex = /(?<!\w)\b(cd|ls|mkdir|rmdir|rm|cp|mv)\b(?!\w)/;
 export const codeRun = (socket: any, data: TestData, io: Server) => {
   const { code, lang, input } = data;
 
-  if (directoryCommandsRegex.test(code)) {
-    io.to(socket.id).emit(
-      "error",
-      "리눅스 명령어는 코드에 작성할 수 없습니다."
-    );
-    return;
-  }
-
   const clientResult: string[] = Array(input.length).fill(null);
   const dockerPath = `/usr/src/${socket.id}`;
 
@@ -70,6 +62,14 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
     console.error("에러");
     cleanDirectory(`${filePath}/${socket.id}`);
     io.to(socket.id).emit("error", error.message);
+    return;
+  }
+
+  if (directoryCommandsRegex.test(code)) {
+    io.to(socket.id).emit(
+      "error",
+      "\n리눅스 명령어는 코드에 작성할 수 없습니다."
+    );
     return;
   }
 
