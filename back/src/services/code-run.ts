@@ -22,6 +22,9 @@ const executeCommand = (
 const directoryCommandsRegex =
   /(?<!\w)\b(cd|ls|mkdir|rmdir|rm|cp|mv|sudo)\b(?!\w)/;
 
+const networkConnectionRegex =
+  /#include <.*curl.*>|HttpURLConnection|import requests|fetch\(/;
+
 export const codeRun = (socket: any, data: TestData, io: Server) => {
   const { code, lang, input } = data;
   console.log(code);
@@ -72,6 +75,11 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
       "warning",
       "리눅스 명령어는 코드에 작성할 수 없어요."
     );
+    return;
+  }
+
+  if (networkConnectionRegex.test(code)) {
+    io.to(socket.id).emit("warning", "네트워크 연결 코드는 작성할 수 없어요.");
     return;
   }
 
