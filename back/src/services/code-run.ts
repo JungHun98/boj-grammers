@@ -78,7 +78,9 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
     cleanDirectory(`${filePath}/${socket.id}`);
     console.error(err);
 
-    const message = splitErrorMessage(error.message);
+    const message = splitErrorMessage(
+      error.message.replace(/\/usr\/src\/[^/]+\//, "")
+    );
     io.to(socket.id).emit("error", message);
     return;
   }
@@ -107,7 +109,10 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
           console.error(err);
 
           const message = splitErrorMessage(err);
-          io.to(socket.id).emit("error", message);
+          io.to(socket.id).emit(
+            "error",
+            message.replace(/\/usr\/src\/[^/]+\//, "")
+          );
           return;
         }
 
