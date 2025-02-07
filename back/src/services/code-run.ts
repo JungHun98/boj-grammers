@@ -27,12 +27,13 @@ const networkConnectionRegex =
 
 const splitErrorMessage = (msg: string) => {
   const ONE_LINE = 1;
-  const message = msg.replace(/\/usr\/src\/[^/]+\//, "").split("\n");
+  let message = msg.split("\n");
 
   if (message.length === ONE_LINE) {
     return msg;
   }
 
+  message = message.map((elem) => elem.replace(/\/usr\/src\/[^/]+\//, ""));
   return message.slice(ONE_LINE).join("\n");
 };
 
