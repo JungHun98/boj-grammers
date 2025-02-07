@@ -27,13 +27,13 @@ const networkConnectionRegex =
 
 const splitErrorMessage = (msg: string) => {
   const ONE_LINE = 1;
-  const message = msg.split("\n");
+  const message = msg.replace(/\/usr\/src\/[^/]+\//, "").split("\n");
 
   if (message.length === ONE_LINE) {
     return msg;
   }
 
-  return message.slice(1).join("\n");
+  return message.slice(ONE_LINE).join("\n");
 };
 
 export const codeRun = (socket: any, data: TestData, io: Server) => {
@@ -78,9 +78,7 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
     cleanDirectory(`${filePath}/${socket.id}`);
     console.error(err);
 
-    const message = splitErrorMessage(
-      error.message.replace(/\/usr\/src\/[^/]+\//, "")
-    );
+    const message = splitErrorMessage(error.message);
     io.to(socket.id).emit("error", message);
     return;
   }
@@ -109,10 +107,7 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
           console.error(err);
 
           const message = splitErrorMessage(err);
-          io.to(socket.id).emit(
-            "error",
-            message.replace(/\/usr\/src\/[^/]+\//, "")
-          );
+          io.to(socket.id).emit("error", message);
           return;
         }
 
