@@ -25,6 +25,17 @@ const directoryCommandsRegex =
 const networkConnectionRegex =
   /#include <.*curl.*>|HttpURLConnection|import requests|fetch\(/;
 
+const splitErrorMessage = (msg: string) => {
+  const ONE_LINE = 1;
+  const message = msg.split("\n");
+
+  if (message.length === ONE_LINE) {
+    return msg;
+  }
+
+  return message.slice(1).join("\n");
+};
+
 export const codeRun = (socket: any, data: TestData, io: Server) => {
   const { code, lang, input } = data;
   console.log(code);
@@ -64,9 +75,11 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
     }
   } catch (err) {
     const error = err as Error;
-    console.error("에러");
     cleanDirectory(`${filePath}/${socket.id}`);
-    io.to(socket.id).emit("error", error.message);
+    console.error(err);
+
+    const message = splitErrorMessage(error.message);
+    io.to(socket.id).emit("error", message);
     return;
   }
 
@@ -91,8 +104,10 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
     try {
       executeCommand(test, run, socket.id, (err: string, res: any) => {
         if (err) {
-          console.log(err);
-          io.to(socket.id).emit("error", err);
+          console.error(err);
+
+          const message = splitErrorMessage(err);
+          io.to(socket.id).emit("error", message);
           return;
         }
 
@@ -102,7 +117,8 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
         io.to(socket.id).emit("output", clientResult);
       });
     } catch (err: any) {
-      io.to(socket.id).emit("error", err.message);
+      const message = splitErrorMessage(err.message);
+      io.to(socket.id).emit("error", message);
     }
   });
 

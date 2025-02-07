@@ -7,7 +7,7 @@ export const dockerRun = (command: string, socketId: string, cb: any) => {
   exec(command, (error, stdout, stderr) => {
     if (isTimeout) {
       cb(
-        `\nExecution timed out after ${Math.floor(TIME_OUT / 1000)} seconds`,
+        `Execution timed out after ${Math.floor(TIME_OUT / 1000)} seconds`,
         null
       );
       return;
