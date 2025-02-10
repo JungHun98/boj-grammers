@@ -1,6 +1,6 @@
 FROM python:3.9-alpine
 RUN apk add --update nodejs npm
-RUN apk add openjdk11
+RUN apk add openjdk8
 RUN apk add g++
 # RUN adduser -D ubuntu
 # RUN chown -R ubuntu:ubuntu /usr/src
