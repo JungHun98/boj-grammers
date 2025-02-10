@@ -1,36 +1,35 @@
-import { exec } from "child_process";
+import { Worker } from "worker_threads";
 
-export const dockerRun = (command: string, socketId: string, cb: any) => {
-  const TIME_OUT = 10000;
-  let isTimeout = false;
+interface DockerRunCallback {
+  (err: string, res: any): void;
+}
 
-  exec(command, (error, stdout, stderr) => {
-    if (isTimeout) {
-      cb(
-        `Execution timed out after ${Math.floor(TIME_OUT / 1000)} seconds`,
-        null
-      );
-      return;
+export const dockerRun = (
+  command: string,
+  socketId: string,
+  cb: DockerRunCallback
+) => {
+  const TIME_OUT = 15000;
+
+  const worker = new Worker("./src/utils/worker.js");
+
+  worker.postMessage({ command, socketId, timeout: TIME_OUT });
+
+  worker.on("message", (result: { error: string; stdout: string }) => {
+    if (result.error) {
+      cb(result.error, null);
+    } else {
+      cb("", result.stdout);
     }
-
-    console.log("clear");
-    clearTimeout(timeoutId); // 작업이 완료되면 타이머 해제
-
-    if (error) {
-      cb(error.message, null);
-      return;
-    }
-    if (stderr) {
-      cb(stderr, null);
-      return;
-    }
-
-    cb(null, stdout);
   });
 
-  const timeoutId = setTimeout(() => {
-    isTimeout = true;
-    exec(`docker exec test-app pkill -f ${socketId}`);
-    console.log("exit");
-  }, TIME_OUT);
+  worker.on("error", (error) => {
+    cb(error.message, null);
+  });
+
+  worker.on("exit", (code) => {
+    if (code !== 0) {
+      cb(`Worker stopped with exit code ${code}`, null);
+    }
+  });
 };
