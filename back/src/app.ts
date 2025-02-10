@@ -7,6 +7,7 @@ import path from "path";
 import { problem } from "./services/problem";
 import { problemSocket } from "./services/problem-socket";
 import { dockerBuild } from "./helper/docker-build";
+import { Axios, isAxiosError } from "axios";
 
 const app: Application = express();
 const server = http.createServer(app);
@@ -73,8 +74,18 @@ app.get("/api/problem", async function (req, res) {
       examples,
     });
   } catch (err) {
-    const error = err as unknown as Error;
-    res.status(Number(error.message)).send("Error fetching data");
+    let status = 500;
+    let message;
+
+    if (isAxiosError(err)) {
+      status = err.status as number;
+      message = err.message;
+    } else {
+      const error = err as Error;
+      message = error.message;
+    }
+
+    res.status(status).send({ message });
   }
 });
 
