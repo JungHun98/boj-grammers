@@ -1,4 +1,4 @@
-import { isAxiosError } from "axios";
+import { AxiosError, isAxiosError } from "axios";
 
 const axios = require("axios");
 const cheerio = require("cheerio");
@@ -92,10 +92,10 @@ export const problem = async (id: Number) => {
       examples,
     };
   } catch (err) {
-    if (isAxiosError(err) && err.response?.status === 404) {
-      throw Error("404");
-    } else {
-      throw Error("500");
+    if (isAxiosError(err)) {
+      console.error("axios Error: ", err.status);
+      console.error(err.message);
     }
+    throw err;
   }
 };
