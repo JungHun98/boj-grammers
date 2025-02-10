@@ -40,6 +40,12 @@ const getCpuUsage = () => {
   return cpuUsagePercentage;
 };
 
+const directoryCommandsRegex =
+  /(?<!\w)\b("cd|"ls|"mkdir|"rmdir|"rm|"cp|"mv|"sudo)\b(?!\w)/;
+
+const networkConnectionRegex =
+  /#include <.*curl.*>|HttpURLConnection|import requests|fetch\(/;
+
 export const problemSocket = (io: Server) => {
   const problem = io.of("/");
 
@@ -55,6 +61,22 @@ export const problemSocket = (io: Server) => {
         io.to(socket.id).emit(
           "warning",
           "서버가 혼잡해요. 잠시만 기다려주세요."
+        );
+        return;
+      }
+
+      if (directoryCommandsRegex.test(data.code)) {
+        io.to(socket.id).emit(
+          "warning",
+          "리눅스 명령어는 코드에 작성할 수 없어요."
+        );
+        return;
+      }
+
+      if (networkConnectionRegex.test(data.code)) {
+        io.to(socket.id).emit(
+          "warning",
+          "네트워크 연결 코드는 작성할 수 없어요."
         );
         return;
       }

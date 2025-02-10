@@ -19,12 +19,6 @@ const executeCommand = (
   dockerRun(command, socketId, callback);
 };
 
-const directoryCommandsRegex =
-  /(?<!\w)\b(cd|ls|mkdir|rmdir|rm|cp|mv|sudo)\b(?!\w)/;
-
-const networkConnectionRegex =
-  /#include <.*curl.*>|HttpURLConnection|import requests|fetch\(/;
-
 const splitErrorMessage = (msg: string) => {
   const ONE_LINE = 1;
   let message = msg.split("\n");
@@ -57,7 +51,7 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
     },
     java: {
       compile: `javac ${dockerPath}/Main.java`,
-      run: `java ${dockerPath}/Main.java`,
+      run: `java -cp ${dockerPath} Main`,
     },
     cpp: {
       compile: `g++ ${dockerPath}/main.cpp -o ${dockerPath}/main`,
@@ -81,21 +75,6 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
 
     const message = splitErrorMessage(error.message);
     io.to(socket.id).emit("error", message);
-    return;
-  }
-
-  if (directoryCommandsRegex.test(code)) {
-    io.to(socket.id).emit(
-      "warning",
-      "리눅스 명령어는 코드에 작성할 수 없어요."
-    );
-    cleanDirectory(`${filePath}/${socket.id}`);
-    return;
-  }
-
-  if (networkConnectionRegex.test(code)) {
-    io.to(socket.id).emit("warning", "네트워크 연결 코드는 작성할 수 없어요.");
-    cleanDirectory(`${filePath}/${socket.id}`);
     return;
   }
 
