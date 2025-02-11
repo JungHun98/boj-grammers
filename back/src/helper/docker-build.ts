@@ -4,7 +4,7 @@ export const dockerBuild = () => {
   try {
     execSync("docker build -t test-image ./docker");
     execSync(
-      'docker run -d --name test-app --cpus="0.8" --memory="1024m" test-image'
+      'docker run -d --name test-app --cpus="0.8" --memory="512m" test-image'
     );
   } catch (error) {
     console.error(
