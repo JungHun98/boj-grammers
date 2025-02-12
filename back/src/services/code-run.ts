@@ -47,8 +47,12 @@ async function dockerHandle(
       Image: imageName[lang],
       Tty: true,
       HostConfig: {
-        Memory: MEMORY_LIMIT,
-        CpuShares: CPU_LIMIT,
+        Memory: 256 * 1024 * 1024, // 256MB
+        MemorySwap: 256 * 1024 * 1024, // 총 메모리 제한 (메모리 + 스왑)
+        NanoCpus: 1e9, // 1 CPU
+        CpuQuota: 50000, // CPU 사용량 50% 제한
+        CpuPeriod: 100000,
+        PidsLimit: 15,
       },
     });
 
