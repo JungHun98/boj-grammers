@@ -1,12 +1,12 @@
 const { parentPort } = require("worker_threads");
 const { exec } = require("child_process");
 
-parentPort?.on("message", ({ command, socketId, timeout }) => {
+parentPort?.on("message", ({ command, socketId, containerId, timeout }) => {
   let isTimeout = false;
 
   const timeoutId = setTimeout(() => {
     isTimeout = true;
-    exec(`docker exec test-app pkill -f ${socketId}`, (error) => {
+    exec(`docker exec ${containerId} pkill -f ${socketId}`, (error) => {
       if (error) {
         parentPort?.postMessage({ error: error.message });
       } else {

@@ -96,7 +96,7 @@ async function dockerHandle(
           const formattedParam = test.split("\n").join("\\n");
           const command = `docker exec ${container.id} sh -c "echo '${formattedParam}' | ${languageCommands[lang].run}"`;
 
-          dockerRun(command, id, (err: string, res: any) => {
+          dockerRun(command, id, container.id, (err: string, res: any) => {
             if (err) {
               console.error(err);
 
