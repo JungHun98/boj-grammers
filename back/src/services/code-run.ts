@@ -48,7 +48,7 @@ async function dockerHandle(
       Tty: true,
       HostConfig: {
         Memory: 256 * 1024 * 1024, // 256MB
-        MemorySwap: 256 * 1024 * 1024, // 총 메모리 제한 (메모리 + 스왑)
+        MemorySwap: 512 * 1024 * 1024, // 총 메모리 제한 (메모리 + 스왑)
         CpuQuota: 50000, // CPU 사용량 50% 제한
         CpuPeriod: 100000,
         PidsLimit: 15,
