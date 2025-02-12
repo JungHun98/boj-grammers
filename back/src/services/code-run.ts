@@ -47,10 +47,9 @@ async function dockerHandle(
       Image: imageName[lang],
       Tty: true,
       HostConfig: {
-        Memory: 512 * 1024 * 1024, // 256MB
-        CpuQuota: 80000, // CPU 사용량 50% 제한
-        CpuPeriod: 100000,
-        PidsLimit: 15,
+        Memory: 512 * 1024 * 1024, // 500MB 메모리 제한
+        CpuShares: 512, // CPU 비율 (1024가 기본값, 512는 50% CPU를 의미)
+        CpuPeriod: 100000, // CPU 할당 기간
       },
     });
 
