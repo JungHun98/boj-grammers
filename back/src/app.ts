@@ -6,8 +6,7 @@ import path from "path";
 
 import { problem } from "./services/problem";
 import { problemSocket } from "./services/problem-socket";
-import { dockerBuild } from "./helper/docker-build";
-import { Axios, isAxiosError } from "axios";
+import { isAxiosError } from "axios";
 
 const app: Application = express();
 const server = http.createServer(app);
@@ -94,5 +93,3 @@ app.use(express.static(path.join(__dirname, "../../front/build")));
 server.listen(port, function () {
   console.log(`App is listening on port ${port} !`);
 });
-
-dockerBuild();
