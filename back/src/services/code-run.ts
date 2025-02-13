@@ -2,7 +2,6 @@ import fs from "fs";
 
 import { dockerRun } from "../helper/docker-run";
 import { TestData } from "./problem-socket";
-import { cleanDirectory } from "../helper/clean-directory";
 import { execSync } from "child_process";
 import { fileName, filePath } from "../consts";
 import { Server } from "socket.io";
@@ -28,7 +27,7 @@ const imageName = {
 };
 
 const docker = new Docker();
-const MEMORY_LIMIT = 500 * 1024 * 1024;
+const MEMORY_LIMIT = 512 * 1024 * 1024;
 const CPU_LIMIT = 512;
 
 async function dockerHandle(
@@ -47,9 +46,9 @@ async function dockerHandle(
       Image: imageName[lang],
       Tty: true,
       HostConfig: {
-        Memory: 512 * 1024 * 1024, // 500MB 메모리 제한
-        CpuShares: 512, // CPU 비율 (1024가 기본값, 512는 50% CPU를 의미)
-        CpuPeriod: 100000, // CPU 할당 기간
+        Memory: MEMORY_LIMIT,
+        CpuShares: CPU_LIMIT,
+        CpuPeriod: 100000,
       },
     });
 
@@ -83,7 +82,6 @@ async function dockerHandle(
       }
     } catch (err) {
       const error = err as Error;
-      cleanDirectory(`${filePath}/${id}`);
       console.error(err);
 
       const message = splitErrorMessage(error.message, id);
@@ -117,7 +115,6 @@ async function dockerHandle(
     );
   } catch (err: any) {
     console.error("Error:", err);
-    cleanDirectory(`${filePath}/${id}`);
   } finally {
     if (container !== null) {
       await container.stop();

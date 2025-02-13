@@ -2,8 +2,8 @@ import { Server } from "socket.io";
 import fs from "fs";
 import os from "os";
 import { codeRun } from "./code-run";
-import { execSync } from "child_process";
 import { filePath } from "../consts";
+import { cleanDirectory } from "../helper/clean-directory";
 
 type Langauge = "cpp" | "python" | "java" | "javascript";
 
@@ -84,11 +84,12 @@ export const problemSocket = (io: Server) => {
       codeRun(socket, data, io);
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", async () => {
       try {
+        cleanDirectory(`${filePath}/${socket.id}`);
         fs.rmdirSync(`compile/${socket.id}`);
       } catch {
-        console.log(`fail remove /usr/src/${socket.id}`);
+        console.log(`fail remove ${socket.id}`);
       } finally {
         console.log("disconnect");
       }
