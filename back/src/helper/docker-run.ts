@@ -6,7 +6,7 @@ interface DockerRunCallback {
 
 export const dockerRun = (
   command: string,
-  socketId: string,
+  rundir: string,
   containerId: string,
   cb: DockerRunCallback
 ) => {
@@ -14,7 +14,7 @@ export const dockerRun = (
 
   const worker = new Worker("./src/utils/worker.js");
 
-  worker.postMessage({ command, socketId, containerId, timeout: TIME_OUT });
+  worker.postMessage({ command, rundir, containerId, timeout: TIME_OUT });
 
   worker.on("message", (result: { error: string; stdout: string }) => {
     if (result.error) {

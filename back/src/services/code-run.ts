@@ -7,6 +7,8 @@ import { fileName, filePath } from "../consts";
 import { Server } from "socket.io";
 import Docker from "dockerode";
 
+const DOCKER_ULR = "/home";
+
 const splitErrorMessage = (msg: string, id: string) => {
   const ONE_LINE = 1;
   let message = msg.split("\n");
@@ -15,12 +17,12 @@ const splitErrorMessage = (msg: string, id: string) => {
     return msg;
   }
 
-  message = message.map((elem) => elem.replace(`${id}/`, ""));
+  message = message.map((elem) => elem.replace(`${DOCKER_ULR}/${id}/`, ""));
   return message.slice(ONE_LINE).join("\n").replace("/", "");
 };
 
 const imageName = {
-  python: `python:3.9-alpine`,
+  python: `python:alpine`,
   java: `openjdk:8-jdk-alpine`,
   javascript: `node:16`,
   cpp: `gcc:latest`,
@@ -47,7 +49,7 @@ async function dockerHandle(
       Tty: true,
       HostConfig: {
         Memory: MEMORY_LIMIT,
-        CpuShares: CPU_LIMIT,
+        CpuShares: 2,
         CpuPeriod: 100000,
       },
     });
@@ -55,26 +57,28 @@ async function dockerHandle(
     const languageCommands = {
       javascript: {
         compile: null,
-        run: `node ${id}/code.js`,
+        run: `node ${DOCKER_ULR}/code.js`,
       },
       python: {
         compile: null,
-        run: `python3 ${id}/code.py`,
+        run: `python3 ${DOCKER_ULR}/code.py`,
       },
       java: {
-        compile: `javac ${id}/Main.java`,
-        run: `java -cp ${id} Main`,
+        compile: `javac ${DOCKER_ULR}/Main.java`,
+        run: `java -cp ${DOCKER_ULR} Main`,
       },
       cpp: {
-        compile: `g++ ${id}/main.cpp -o ${id}/main`,
-        run: `${id}/main`,
+        compile: `g++ ${DOCKER_ULR}/main.cpp -o ${DOCKER_ULR}/main`,
+        run: `${DOCKER_ULR}/main`,
       },
     };
 
     await container.start();
 
     try {
-      execSync(`docker cp ${filePath}/${id} ${container.id}:/`);
+      execSync(
+        `docker cp ${filePath}/${id}/${fileName[lang]} ${container.id}:${DOCKER_ULR}`
+      );
       const compile = languageCommands[lang].compile;
 
       if (compile !== null) {
@@ -95,21 +99,26 @@ async function dockerHandle(
           const formattedParam = test.split("\n").join("\\n");
           const command = `docker exec ${container.id} sh -c "echo '${formattedParam}' | ${languageCommands[lang].run}"`;
 
-          dockerRun(command, id, container.id, (err: string, res: any) => {
-            if (err) {
-              console.error(err);
+          dockerRun(
+            command,
+            DOCKER_ULR,
+            container.id,
+            (err: string, res: any) => {
+              if (err) {
+                console.error(err);
 
-              const message = splitErrorMessage(err, id);
-              socketIO.to(id).emit("error", message);
-              rej(err);
-              return;
+                const message = splitErrorMessage(err, id);
+                socketIO.to(id).emit("error", message);
+                rej(err);
+                return;
+              }
+
+              const result = typeof res === "object" ? JSON.parse(res) : res;
+              clientResult[i] = result;
+              socketIO.to(id).emit("output", clientResult);
+              _res(result);
             }
-
-            const result = typeof res === "object" ? JSON.parse(res) : res;
-            clientResult[i] = result;
-            socketIO.to(id).emit("output", clientResult);
-            _res(result);
-          });
+          );
         });
       })
     );
