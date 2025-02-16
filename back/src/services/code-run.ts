@@ -32,6 +32,25 @@ const docker = new Docker();
 const MEMORY_LIMIT = 512 * 1024 * 1024;
 const CPU_LIMIT = 512;
 
+const languageCommands = {
+  javascript: {
+    compile: null,
+    run: `node ${DOCKER_ULR}/code.js`,
+  },
+  python: {
+    compile: null,
+    run: `python3 ${DOCKER_ULR}/code.py`,
+  },
+  java: {
+    compile: `javac ${DOCKER_ULR}/Main.java`,
+    run: `java -cp ${DOCKER_ULR} Main`,
+  },
+  cpp: {
+    compile: `g++ ${DOCKER_ULR}/main.cpp -o ${DOCKER_ULR}/main`,
+    run: `${DOCKER_ULR}/main`,
+  },
+};
+
 async function dockerHandle(
   id: string,
   code: string,
@@ -54,48 +73,20 @@ async function dockerHandle(
       },
     });
 
-    const languageCommands = {
-      javascript: {
-        compile: null,
-        run: `node ${DOCKER_ULR}/code.js`,
-      },
-      python: {
-        compile: null,
-        run: `python3 ${DOCKER_ULR}/code.py`,
-      },
-      java: {
-        compile: `javac ${DOCKER_ULR}/Main.java`,
-        run: `java -cp ${DOCKER_ULR} Main`,
-      },
-      cpp: {
-        compile: `g++ ${DOCKER_ULR}/main.cpp -o ${DOCKER_ULR}/main`,
-        run: `${DOCKER_ULR}/main`,
-      },
-    };
-
     await container.start();
 
-    try {
-      execSync(
-        `docker cp ${filePath}/${id}/${fileName[lang]} ${container.id}:${DOCKER_ULR}`
-      );
-      const compile = languageCommands[lang].compile;
+    execSync(
+      `docker cp ${filePath}/${id}/${fileName[lang]} ${container.id}:${DOCKER_ULR}`
+    );
+    const compile = languageCommands[lang].compile;
 
-      if (compile !== null) {
-        execSync(`docker exec ${container.id} sh -c "${compile}"`);
-      }
-    } catch (err) {
-      const error = err as Error;
-      console.error(err);
-
-      const message = splitErrorMessage(error.message, id);
-      socketIO.to(id).emit("error", message);
-      return;
+    if (compile !== null) {
+      execSync(`docker exec ${container.id} sh -c "${compile}"`);
     }
 
     await Promise.all(
       inputDataList.map((test, i) => {
-        return new Promise((_res, rej) => {
+        return new Promise((resolve, reject) => {
           const formattedParam = test.split("\n").join("\\n");
           const command = `docker exec ${container.id} sh -c "echo '${formattedParam}' | ${languageCommands[lang].run}"`;
 
@@ -105,24 +96,24 @@ async function dockerHandle(
             container.id,
             (err: string, res: any) => {
               if (err) {
-                console.error(err);
-
-                const message = splitErrorMessage(err, id);
-                socketIO.to(id).emit("error", message);
-                rej(err);
+                reject(new Error(err));
                 return;
               }
 
               const result = typeof res === "object" ? JSON.parse(res) : res;
               clientResult[i] = result;
               socketIO.to(id).emit("output", clientResult);
-              _res(result);
+              resolve(result);
             }
           );
         });
       })
     );
-  } catch (err: any) {
+  } catch (err) {
+    const error = err as Error;
+    const message = splitErrorMessage(error.message, id);
+
+    socketIO.to(id).emit("error", message);
     console.error("Error:", err);
   } finally {
     if (container !== null) {
@@ -136,6 +127,11 @@ export const codeRun = (socket: any, data: TestData, io: Server) => {
   const { code, lang, input } = data;
   console.log(code);
 
-  fs.writeFileSync(`${filePath}/${socket.id}/${fileName[lang]}`, code);
-  dockerHandle(socket.id, code, lang, input, io);
+  try {
+    fs.writeFileSync(`${filePath}/${socket.id}/${fileName[lang]}`, code);
+    dockerHandle(socket.id, code, lang, input, io);
+  } catch (error) {
+    io.to(socket.id).emit("error", error);
+    console.error(error);
+  }
 };
