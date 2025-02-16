@@ -4,19 +4,12 @@ interface DockerRunCallback {
   (err: string, res: any): void;
 }
 
-export const dockerRun = (
-  command: string,
-  rundir: string,
-  containerId: string,
-  cb: DockerRunCallback
-) => {
-  const TIME_OUT = 15000;
-
+export const dockerRun = (command: string, cb: DockerRunCallback) => {
   const worker = new Worker("./src/utils/worker.ts", {
     execArgv: ["-r", "ts-node/register"],
   });
 
-  worker.postMessage({ command, rundir, containerId, timeout: TIME_OUT });
+  worker.postMessage({ command });
 
   worker.on("message", (result: { error: string; stdout: string }) => {
     if (result.error) {
@@ -35,4 +28,6 @@ export const dockerRun = (
       cb(`Worker stopped with exit code ${code}`, null);
     }
   });
+
+  return worker;
 };

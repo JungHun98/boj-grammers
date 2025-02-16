@@ -5,6 +5,7 @@ import { TestData } from "./problem-socket";
 import { execSync } from "child_process";
 import { fileName, filePath } from "../consts";
 import { Server } from "socket.io";
+import { Worker } from "worker_threads";
 import Docker from "dockerode";
 
 const DOCKER_ULR = "/home";
@@ -59,6 +60,8 @@ async function dockerHandle(
   socketIO: Server
 ) {
   let container: any = null;
+  const workerArr: Worker[] = [];
+
   try {
     const clientResult: string[] = Array(inputDataList.length).fill(null);
     socketIO.to(id).emit("start", clientResult);
@@ -68,7 +71,7 @@ async function dockerHandle(
       Tty: true,
       HostConfig: {
         Memory: MEMORY_LIMIT,
-        CpuShares: 2,
+        CpuShares: 512,
         CpuPeriod: 100000,
       },
     });
@@ -84,32 +87,44 @@ async function dockerHandle(
       execSync(`docker exec ${container.id} sh -c "${compile}"`);
     }
 
-    await Promise.all(
-      inputDataList.map((test, i) => {
-        return new Promise((resolve, reject) => {
-          const formattedParam = test.split("\n").join("\\n");
-          const command = `docker exec ${container.id} sh -c "echo '${formattedParam}' | ${languageCommands[lang].run}"`;
+    const codeRunPromiseArr = inputDataList.map((test, i) => {
+      return new Promise((resolve, reject) => {
+        const formattedParam = test.split("\n").join("\\n");
+        const command = `docker exec ${container.id} sh -c "echo '${formattedParam}' | ${languageCommands[lang].run}"`;
 
-          dockerRun(
-            command,
-            DOCKER_ULR,
-            container.id,
-            (err: string, res: any) => {
-              if (err) {
-                reject(new Error(err));
-                return;
-              }
+        const codeWorker = dockerRun(command, (err: string, res: any) => {
+          if (err) {
+            reject(new Error(err));
+            return;
+          }
 
-              const result = typeof res === "object" ? JSON.parse(res) : res;
-              clientResult[i] = result;
-              socketIO.to(id).emit("output", clientResult);
-              resolve(result);
-            }
-          );
+          const result = typeof res === "object" ? JSON.parse(res) : res;
+          clientResult[i] = result;
+          socketIO.to(id).emit("output", clientResult);
+          resolve(result);
         });
-      })
-    );
+
+        workerArr.push(codeWorker);
+      });
+    });
+
+    const TIME_OUT = 15000;
+    const timoutTimer = new Promise((_, rej) => {
+      setTimeout(() => {
+        rej(
+          new Error(
+            `Execution timed out after ${Math.floor(TIME_OUT / 1000)} seconds`
+          )
+        );
+      }, TIME_OUT);
+    });
+
+    await Promise.race([Promise.all(codeRunPromiseArr), timoutTimer]);
   } catch (err) {
+    workerArr.forEach((worker) => {
+      worker.terminate();
+    });
+
     const error = err as Error;
     const message = splitErrorMessage(error.message, id);
 
@@ -123,13 +138,13 @@ async function dockerHandle(
   }
 }
 
-export const codeRun = (socket: any, data: TestData, io: Server) => {
+export const codeRun = async (socket: any, data: TestData, io: Server) => {
   const { code, lang, input } = data;
   console.log(code);
 
   try {
     fs.writeFileSync(`${filePath}/${socket.id}/${fileName[lang]}`, code);
-    dockerHandle(socket.id, code, lang, input, io);
+    await dockerHandle(socket.id, code, lang, input, io);
   } catch (error) {
     io.to(socket.id).emit("error", error);
     console.error(error);

@@ -8,52 +8,18 @@ interface TaskParam {
   timeout: number;
 }
 
-parentPort?.on(
-  "message",
-  ({ command, rundir, containerId, timeout }: TaskParam) => {
-    let isTimeout = false;
+parentPort?.on("message", ({ command }: TaskParam) => {
+  exec(command, (error: { message: any }, stdout: any, stderr: any) => {
+    if (error) {
+      parentPort?.postMessage({ error: error.message });
+      return;
+    }
 
-    const timeoutId = setTimeout(() => {
-      isTimeout = true;
-      exec(
-        `docker exec ${containerId} pkill -f ${rundir}`,
-        (error: { message: any }) => {
-          if (error) {
-            parentPort?.postMessage({ error: error.message });
-          } else {
-            parentPort?.postMessage({
-              error: `Execution timed out after ${Math.floor(
-                timeout / 1000
-              )} seconds`,
-            });
-          }
-        }
-      );
-    }, timeout);
+    if (stderr) {
+      parentPort?.postMessage({ error: stderr });
+      return;
+    }
 
-    exec(command, (error: { message: any }, stdout: any, stderr: any) => {
-      clearTimeout(timeoutId);
-
-      if (isTimeout) {
-        parentPort?.postMessage({
-          error: `Execution timed out after ${Math.floor(
-            timeout / 1000
-          )} seconds`,
-        });
-        return;
-      }
-
-      if (error) {
-        parentPort?.postMessage({ error: error.message });
-        return;
-      }
-
-      if (stderr) {
-        parentPort?.postMessage({ error: stderr });
-        return;
-      }
-
-      parentPort?.postMessage({ stdout });
-    });
-  }
-);
+    parentPort?.postMessage({ stdout });
+  });
+});
