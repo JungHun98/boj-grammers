@@ -12,7 +12,9 @@ export const dockerRun = (
 ) => {
   const TIME_OUT = 15000;
 
-  const worker = new Worker("./src/utils/worker.js");
+  const worker = new Worker("./src/utils/worker.ts", {
+    execArgv: ["-r", "ts-node/register"],
+  });
 
   worker.postMessage({ command, rundir, containerId, timeout: TIME_OUT });
 
