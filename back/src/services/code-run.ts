@@ -93,8 +93,8 @@ async function dockerHandle(
 
     const codeRunPromiseArr = inputDataList.map((test, i) => {
       return new Promise((resolve, reject) => {
-        const formattedParam = test.split("\n").join("\\n");
-        const command = `docker exec ${container.id} sh -c "echo '${formattedParam}' | ${languageCommands[lang].run}"`;
+        const formattedParam = test.replace(/\n/g, "\\n");
+        const command = `docker exec ${container.id} sh -c "printf '${formattedParam}' | ${languageCommands[lang].run}"`;
 
         const codeWorker = dockerRun(command, (err: string, res: any) => {
           if (err) {
