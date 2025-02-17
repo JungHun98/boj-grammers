@@ -1,4 +1,4 @@
-import fs from "fs";
+import fs from "fs/promises";
 
 import { dockerRun } from "../helper/docker-run";
 import { TestData } from "./problem-socket";
@@ -69,10 +69,14 @@ async function dockerHandle(
     container = await docker.createContainer({
       Image: imageName[lang],
       Tty: true,
+      NetworkDisabled: true,
+
       HostConfig: {
         Memory: MEMORY_LIMIT,
         CpuShares: 512,
         CpuPeriod: 100000,
+        NetworkMode: "none",
+        SecurityOpt: ["no-new-privileges"],
       },
     });
 
@@ -140,11 +144,12 @@ async function dockerHandle(
 
 export const codeRun = async (socket: any, data: TestData, io: Server) => {
   const { code, lang, input } = data;
+  const path = `${filePath}/${socket.id}/${fileName[lang]}`;
   console.log(code);
 
   try {
-    fs.writeFileSync(`${filePath}/${socket.id}/${fileName[lang]}`, code);
-    await dockerHandle(socket.id, code, lang, input, io);
+    await fs.writeFile(path, code, "utf8");
+    dockerHandle(socket.id, code, lang, input, io);
   } catch (error) {
     io.to(socket.id).emit("error", error);
     console.error(error);
