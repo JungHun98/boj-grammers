@@ -26,5 +26,5 @@ jobs:
 
       - name: 서버 재시작 (PM2 사용 시)
         run: |
-          npx pm2 stop all || echo "No process found"
-          npx pm2 start dist/app.js --name "boj-grammers"
+          pm2 kill
+          pm2 start dist/app.js --name "boj-grammers"
