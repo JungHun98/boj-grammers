@@ -7,6 +7,7 @@ import { fileName, filePath } from "../consts";
 import { Server } from "socket.io";
 import { Worker } from "worker_threads";
 import Docker from "dockerode";
+import { restartDocker } from "../helper/restart-docker";
 
 const DOCKER_ULR = "/home";
 
@@ -79,7 +80,6 @@ async function dockerHandle(
         SecurityOpt: ["no-new-privileges"],
       },
     });
-
     await container.start();
 
     execSync(
@@ -138,6 +138,8 @@ async function dockerHandle(
     if (container !== null) {
       await container.stop();
       await container.remove();
+    } else {
+      restartDocker();
     }
   }
 }
