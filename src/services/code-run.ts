@@ -25,7 +25,7 @@ const splitErrorMessage = (msg: string, id: string) => {
 
 const imageName = {
   python: `python:alpine`,
-  java: `openjdk:8-jdk-alpine`,
+  java: `eclipse-temurin:11-jdk-ubi9-minimal`,
   javascript: `node:16`,
   cpp: `gcc:latest`,
 };
